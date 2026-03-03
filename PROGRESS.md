@@ -35,6 +35,8 @@
 
 **Findings:** All 50 turns had valid JSON (`action_parse_success: true`). Some actions rejected for `insufficient_budget` (21 in one run) when the model proposed more spend than available. No `out_of_bounds` / `invalid_zone` / `exceeded_max_actions` in that run. See [testing.md](testing.md) for details.
 
+**Multi-seed run:** `python3 run.py --seeds 42,123,456` produced two runs with small but functioning cities (population scores ≈0.9 and composite ≈36–40) and one failure case (seed 456: composite 25.0 with zero population due to never having any connected residential tiles). `python3 run.py --compare results/` summarizes these in `results/comparison_summary.csv`.
+
 ### Code issues identified
 
 | Issue | Location | Severity |
@@ -56,5 +58,5 @@
 
 ## Changelog
 
-- **Benchmark testing:** Ran smoke (5-turn) and full 50-turn runs with llama3:8b; documented results in testing.md; reviewed code and documented four issues (grid disabled road, compare robustness, scorer robustness, action outcomes not in prompt).
+- **Benchmark testing:** Ran smoke (5-turn), full 50-turn, and multi-seed runs with llama3:8b; documented results in testing.md; reviewed code and documented four issues (grid disabled road, compare robustness, scorer robustness, action outcomes not in prompt), and analyzed a failure case (seed 456 with no connected residential).
 - **Initial:** MVP implementation completed; all plan phases and todos done. Progress doc added.

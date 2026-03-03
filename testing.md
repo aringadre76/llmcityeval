@@ -45,6 +45,7 @@ Runs performed with **llama3:8b** (Ollama):
 |-----|------|-------|-------------------------|------------------|-----------|--------|
 | Smoke | 42 | 5 | 0 | 0–25 | 0–25 | Parse success may vary; no time for growth. |
 | Full | 42 | 50 | 249 | 6.22 | 26.56 | Revenue from ~turn 18; 21 actions rejected (insufficient_budget). |
+| Multi-seed | 42,123,456 | 50 | - | 0.59 ± 0.42 | 33.69 ± 6.32 | Aggregated over three runs; seeds 42 and 123 grew small cities, seed 456 never grew population (no connected residential); see `results/comparison_summary.csv`. |
 
 **In the 50-turn run:** All turns had `action_parse_success: true`. Rejections were only `insufficient_budget` (model proposed more spend than available in a single turn). No parse failures, no `out_of_bounds` or `invalid_zone`. See result JSONs in `results/` for per-turn `actions`, `action_outcomes`, and `state`.
 

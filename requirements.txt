@@ -2,3 +2,4 @@ requests
 pytest
 ruff
 boto3
+pyyaml

@@ -1,0 +1,21 @@
+metrics:
+  - name: final_score
+    source: scores.composite
+    aggregate: [mean, std, min, max]
+
+  - name: population_score
+    source: scores.population
+    aggregate: [mean]
+
+  - name: efficiency_score
+    source: scores.efficiency
+    aggregate: [mean]
+
+  - name: hard_constraint_violations
+    source: computed.hard_constraint_violations
+    aggregate: [mean]
+
+  - name: avg_recovery_turns
+    source: computed.avg_recovery_turns
+    aggregate: [mean]
+

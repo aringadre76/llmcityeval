@@ -4,17 +4,8 @@ from dataclasses import dataclass
 from random import Random
 from typing import Any
 
-from config import (
-    DEMAND_SURGE_DIVISOR,
-    DISASTER_DEMAND_SURGE_DURATION,
-    DISASTER_DEMAND_SURGE_PROB,
-    DISASTER_INFRA_FAIL_DURATION,
-    DISASTER_INFRA_FAIL_PROB,
-    DISASTER_POLLUTION_PROB,
-    DISASTER_RECESSION_DURATION,
-    DISASTER_RECESSION_PROB,
-)
 from sim.grid import Grid, ZONE_INDUSTRIAL, ZONE_ROAD
+from sim.runtime_config import SimConfig
 
 DISASTER_RECESSION = "recession"
 DISASTER_DEMAND_SURGE = "demand_surge"
@@ -30,7 +21,8 @@ class ActiveDisaster:
 
 
 class DisasterManager:
-    def __init__(self) -> None:
+    def __init__(self, sim_config: SimConfig | None = None) -> None:
+        self.sim_config = sim_config or SimConfig.from_module()
         self._active: list[ActiveDisaster] = []
 
     @property
@@ -73,29 +65,29 @@ class DisasterManager:
         messages: list[str] = []
         triggered: list[dict[str, Any]] = []
 
-        if rng.random() < DISASTER_RECESSION_PROB:
+        if rng.random() < self.sim_config.disaster_recession_prob:
             self._active.append(
                 ActiveDisaster(
                     disaster_type=DISASTER_RECESSION,
-                    ticks_remaining=DISASTER_RECESSION_DURATION,
+                    ticks_remaining=self.sim_config.disaster_recession_duration,
                     metadata={},
                 )
             )
             messages.append("RECESSION: Revenue halved for 3 ticks.")
             triggered.append({"event": DISASTER_RECESSION, "outcome": "applied"})
 
-        if rng.random() < DISASTER_DEMAND_SURGE_PROB:
+        if rng.random() < self.sim_config.disaster_demand_surge_prob:
             self._active.append(
                 ActiveDisaster(
                     disaster_type=DISASTER_DEMAND_SURGE,
-                    ticks_remaining=DISASTER_DEMAND_SURGE_DURATION,
+                    ticks_remaining=self.sim_config.disaster_demand_surge_duration,
                     metadata={},
                 )
             )
             messages.append("DEMAND SURGE: Population capacity reduced for 3 ticks.")
             triggered.append({"event": DISASTER_DEMAND_SURGE, "outcome": "applied"})
 
-        if rng.random() < DISASTER_INFRA_FAIL_PROB:
+        if rng.random() < self.sim_config.disaster_infra_fail_prob:
             road_tiles = [t for t in grid.iter_tiles() if t.zone == ZONE_ROAD]
             if not road_tiles:
                 triggered.append(
@@ -111,7 +103,7 @@ class DisasterManager:
                 self._active.append(
                     ActiveDisaster(
                         disaster_type=DISASTER_INFRA_FAILURE,
-                        ticks_remaining=DISASTER_INFRA_FAIL_DURATION,
+                        ticks_remaining=self.sim_config.disaster_infra_fail_duration,
                         metadata={"x": target.x, "y": target.y},
                     )
                 )
@@ -127,7 +119,7 @@ class DisasterManager:
                     }
                 )
 
-        if rng.random() < DISASTER_POLLUTION_PROB:
+        if rng.random() < self.sim_config.disaster_pollution_prob:
             candidates = []
             for industrial in grid.iter_tiles():
                 if industrial.zone != ZONE_INDUSTRIAL:
@@ -146,8 +138,9 @@ class DisasterManager:
             else:
                 x, y = unique_candidates[rng.randrange(len(unique_candidates))]
                 tile = grid.get_tile(x, y)
-                tile.pollution = min(1.0, tile.pollution + 0.4)
-                messages.append(f"POLLUTION EVENT: Tile ({x}, {y}) received +0.4 pollution.")
+                increment = self.sim_config.pollution_event_increment
+                tile.pollution = min(1.0, tile.pollution + increment)
+                messages.append(f"POLLUTION EVENT: Tile ({x}, {y}) received +{increment:.1f} pollution.")
                 triggered.append(
                     {"event": DISASTER_POLLUTION_EVENT, "outcome": "applied", "x": x, "y": y}
                 )
@@ -163,5 +156,5 @@ class DisasterManager:
             return 1.0
         divisor = 1.0
         for _ in range(count):
-            divisor *= DEMAND_SURGE_DIVISOR
+            divisor *= self.sim_config.demand_surge_divisor
         return divisor

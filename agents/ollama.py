@@ -46,6 +46,29 @@ def _extract_first_json_object(text: str) -> str | None:
     return None
 
 
+def _build_action_feedback_section(last_action_outcomes: list[dict[str, Any]]) -> str:
+    rejected: list[str] = []
+    for outcome in last_action_outcomes:
+        if outcome.get("applied", False):
+            continue
+        action = outcome.get("action", {})
+        action_type = action.get("type", "unknown")
+        zone = action.get("zone", "?")
+        x = action.get("x", "?")
+        y = action.get("y", "?")
+        reason = outcome.get("reason", "unknown_reason")
+        cost = outcome.get("cost")
+        if cost is None:
+            rejected.append(f"- {action_type} {zone} at ({x},{y}): {reason}")
+            continue
+        rejected.append(f"- {action_type} {zone} at ({x},{y}): {reason} (cost={cost})")
+
+    if not rejected:
+        return ""
+
+    return "REJECTED ACTION FEEDBACK:\n" + "\n".join(rejected) + "\n\n"
+
+
 class OllamaAgent(BaseAgent):
     def __init__(self, model: str = DEFAULT_MODEL) -> None:
         super().__init__(name=model)
@@ -57,9 +80,21 @@ class OllamaAgent(BaseAgent):
     def decide(self, state: CityState) -> list[Action]:
         self.last_parse_success = True
         try:
+            state_payload = asdict(state)
+            raw_outcomes = state_payload.pop("last_action_outcomes", [])
+            last_action_outcomes = (
+                raw_outcomes
+                if isinstance(raw_outcomes, list)
+                else []
+            )
+            feedback_section = _build_action_feedback_section(last_action_outcomes)
             payload = {
                 "model": self.model,
-                "prompt": f"{self.system_prompt}\n\n{json.dumps(asdict(state), separators=(',', ':'))}",
+                "prompt": (
+                    f"{self.system_prompt}\n\n"
+                    f"{feedback_section}"
+                    f"{json.dumps(state_payload, separators=(',', ':'))}"
+                ),
                 "stream": False,
             }
             response = requests.post(OLLAMA_URL, json=payload, timeout=OLLAMA_TIMEOUT)

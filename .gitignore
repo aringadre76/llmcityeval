@@ -53,3 +53,9 @@ Thumbs.db
 *.log
 *.tmp
 .cache/
+
+# Type checkers and linters
+.mypy_cache/
+.pytype/
+.ruff_cache/
+coverage.xml

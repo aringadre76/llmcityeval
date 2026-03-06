@@ -4,10 +4,18 @@ from benchmark.logger import RunLog
 from benchmark.scorer import score_run
 from config import TURNS
 from sim.city import City
+from sim.runtime_config import SimConfig
 
 
-def run(agent, seed: int, turns: int = TURNS, verbose: bool = False, results_dir: str = "results") -> RunLog:
-    sim = City(seed=seed)
+def run(
+    agent,
+    seed: int,
+    turns: int = TURNS,
+    verbose: bool = False,
+    results_dir: str = "results",
+    sim_config: SimConfig | None = None,
+) -> RunLog:
+    sim = City(seed=seed, sim_config=sim_config)
     log = RunLog(agent_name=agent.name, seed=seed)
 
     for turn in range(turns):

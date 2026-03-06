@@ -11,20 +11,46 @@ def _clamp_0_100(value: float) -> float:
     return max(0.0, min(100.0, value))
 
 
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _population_series(run_data: dict[str, Any]) -> list[float]:
     turns = run_data.get("turns", [])
-    values = [float((turn.get("state") or {}).get("population", 0.0)) for turn in turns]
+    values: list[float] = []
+    for turn in turns:
+        if not isinstance(turn, dict):
+            values.append(0.0)
+            continue
+        state = turn.get("state")
+        if not isinstance(state, dict):
+            values.append(0.0)
+            continue
+        values.append(_safe_float(state.get("population", 0.0)))
     final_state = run_data.get("final_state") or {}
-    values.append(float(final_state.get("population", 0.0)))
+    values.append(_safe_float(final_state.get("population", 0.0)))
     return values
 
 
 def _resilience_score(run_data: dict[str, Any], populations: list[float]) -> float:
     events: list[tuple[int, dict[str, Any]]] = []
     for turn in run_data.get("turns", []):
-        turn_index = int(turn.get("turn", 0))
+        if not isinstance(turn, dict):
+            continue
+        turn_index = _safe_int(turn.get("turn", 0))
         for event in turn.get("disaster_events", []):
-            events.append((turn_index, event))
+            if isinstance(event, dict):
+                events.append((turn_index, event))
 
     if not events:
         return 100.0
@@ -56,10 +82,17 @@ def _resilience_score(run_data: dict[str, Any], populations: list[float]) -> flo
 
 
 def score_run(run_data: dict[str, Any]) -> dict[str, float]:
-    final_population = float((run_data.get("final_state") or {}).get("population", 0.0))
+    final_state = run_data.get("final_state")
+    if not isinstance(final_state, dict):
+        final_state = {}
+    final_population = _safe_float(final_state.get("population", 0.0))
     population = (final_population / THEORETICAL_MAX_POP) * 100.0
 
-    total_budget_spent = sum(float(turn.get("budget_spent", 0.0)) for turn in run_data.get("turns", []))
+    total_budget_spent = sum(
+        _safe_float(turn.get("budget_spent", 0.0))
+        for turn in run_data.get("turns", [])
+        if isinstance(turn, dict)
+    )
     if total_budget_spent <= 0:
         efficiency = 0.0
     else:

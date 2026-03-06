@@ -11,8 +11,6 @@ from config import (
     COST_RESIDENTIAL,
     COST_ROAD,
     MAX_ACTIONS_PER_TURN,
-    STARTING_BUDGET,
-    STARTING_POPULATION,
 )
 from sim.disasters import DisasterManager
 from sim.grid import (
@@ -25,6 +23,7 @@ from sim.grid import (
     ZONE_RESIDENTIAL,
     ZONE_ROAD,
 )
+from sim.runtime_config import SimConfig
 from sim.mechanics import (
     advance_population,
     compute_expenses,
@@ -60,14 +59,15 @@ class CityState:
 
 
 class City:
-    def __init__(self, seed: int) -> None:
+    def __init__(self, seed: int, sim_config: SimConfig | None = None) -> None:
+        self.sim_config = sim_config or SimConfig.from_module()
         self.rng = Random(seed)
         self.grid = Grid()
-        self.disasters = DisasterManager()
+        self.disasters = DisasterManager(self.sim_config)
 
         self.tick_count = 0
-        self.budget = float(STARTING_BUDGET)
-        self.population = int(STARTING_POPULATION)
+        self.budget = float(self.sim_config.starting_budget)
+        self.population = int(self.sim_config.starting_population)
         self.revenue_per_tick = 0.0
         self.expenses_per_tick = 0.0
         self.livability = 1.0
@@ -193,6 +193,9 @@ class City:
 
             current_tile = self.grid.get_tile(action.x, action.y)
             cost = self._tile_cost(current_tile.zone, action.zone)
+            # Rebuilding a disabled tile should cost the same as building on empty land.
+            if current_tile.disabled and cost == 0 and action.zone != ZONE_EMPTY:
+                cost = self._tile_cost(ZONE_EMPTY, action.zone)
             if self.budget < cost:
                 self._last_action_outcomes.append(
                     {

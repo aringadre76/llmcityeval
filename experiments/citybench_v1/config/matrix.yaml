@@ -1,0 +1,27 @@
+name: citybench_v1
+baseline_model: llama3:8b
+
+# Supported config_overrides keys:
+# - starting_budget
+# - starting_population
+# - disaster_frequency_multiplier
+# - disaster_severity_multiplier
+models:
+  - id: llama3:8b
+    label: LLaMA 3 8B
+  - id: llama3:70b
+    label: LLaMA 3 70B
+
+seeds: [42, 43, 44, 45, 46]
+
+scenarios:
+  - id: default
+    description: "Default CityBench configuration"
+    config_overrides: {}
+
+  - id: disasters_heavy
+    description: "Increased disaster frequency and severity"
+    config_overrides:
+      disaster_frequency_multiplier: 2.0
+      disaster_severity_multiplier: 1.5
+

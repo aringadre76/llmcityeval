@@ -37,6 +37,60 @@ Results are written to the `results/` directory as JSON files (e.g. `llama3_8b_4
 
 ---
 
+## Experiment workflow
+
+CityBench now has a lightweight experiment runner that supports scenario-specific runtime overrides without editing `config.py`.
+
+**Run the full experiment matrix:**
+
+```bash
+python -m benchmark.experiments_cli run \
+  --matrix experiments/citybench_v1/config/matrix.yaml \
+  --experiment citybench_v1
+```
+
+**Run a filtered subset and skip completed runs:**
+
+```bash
+python -m benchmark.experiments_cli run \
+  --matrix experiments/citybench_v1/config/matrix.yaml \
+  --experiment citybench_v1 \
+  --model llama3:8b \
+  --seed 42 \
+  --scenario disasters_heavy \
+  --resume
+```
+
+**Aggregate normalized per-run metrics and summaries:**
+
+```bash
+python -m benchmark.experiments_cli aggregate --experiment citybench_v1
+```
+
+**Upload summaries to a shared filesystem location:**
+
+```bash
+python -m benchmark.experiments_cli upload \
+  --experiment citybench_v1 \
+  --target file:///tmp/citybench-results
+```
+
+Scenario overrides are read from `experiments/citybench_v1/config/matrix.yaml`. Supported keys are:
+
+- `starting_budget`
+- `starting_population`
+- `disaster_frequency_multiplier`
+- `disaster_severity_multiplier`
+
+Generated experiment artifacts:
+
+- `experiments/<name>/runs/index.csv`
+- `experiments/<name>/metrics/per_run_metrics.jsonl`
+- `experiments/<name>/metrics/summary_by_model.csv`
+- `experiments/<name>/metrics/summary_overall.json`
+
+---
+
 ## Current / example results
 
 Runs performed with **llama3:8b** (Ollama):
@@ -93,7 +147,12 @@ This prints a table of mean ± std for population, efficiency, stability, resili
 
 - **End-to-end:** The runner loads the sim, creates an `OllamaAgent`, runs the turn loop, scores the run, and saves a log. A successful short run confirms the stack works (Ollama, prompts, sim, scorer, logger).
 - **Current results:** See "Current / example results" above; full details and code issues are in [PROGRESS.md](PROGRESS.md).
-- **No unit tests yet:** The repo does not include `pytest` or `test_*.py` files. To add automated tests, you could add a `tests/` directory and run `pytest` for sim logic, scoring, and agent parsing.
+- **Automated tests:** Run the full suite with:
+  ```bash
+  pytest tests
+  ```
+- **Current automated coverage:** `tests/` now covers grid/scorer behavior, prompt feedback formatting, runtime scenario config injection, scenario override application, resumable and filtered experiment execution, experiment CLI/upload behavior, per-run metric extraction, and aggregation summaries.
+- **Latest full suite result:** `pytest tests` passed with `26 passed` at last check.
 
 ---
 

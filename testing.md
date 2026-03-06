@@ -95,11 +95,12 @@ Generated experiment artifacts:
 
 Runs performed with **llama3:8b** (Ollama):
 
-| Run | Seed | Turns | Final population (raw) | Population score | Composite | Notes |
-|-----|------|-------|-------------------------|------------------|-----------|--------|
+| Run | Seed(s) | Turns | Final population (raw) | Population score | Composite | Notes |
+|-----|---------|-------|-------------------------|------------------|-----------|--------|
 | Smoke | 42 | 5 | 0 | 0–25 | 0–25 | Parse success may vary; no time for growth. |
 | Full | 42 | 50 | 249 | 6.22 | 26.56 | Revenue from ~turn 18; 21 actions rejected (insufficient_budget). |
-| Multi-seed | 42,123,456 | 50 | - | 0.59 ± 0.42 | 33.69 ± 6.32 | Aggregated over three runs; seeds 42 and 123 grew small cities, seed 456 never grew population (no connected residential); see `results/comparison_summary.csv`. |
+| Multi-seed (full) | 42,123,456 | 50 | - | 0.59 ± 0.42 | 33.69 ± 6.32 | Aggregated over three runs; seeds 42 and 123 grew small cities, seed 456 never grew population (no connected residential); see `results/comparison_summary.csv`. |
+| Multi-seed (medium) | 42,43,44,45,46 | 30 | - | ≈0.0–1.8 (per-run) | ≈17–35 (per-run) | `python3 run.py --model llama3:8b --seeds 42,43,44,45,46 --turns 30`; all seeds completed without runtime errors via local Ollama, exercising longer horizons and multiple seeds. |
 
 **In the 50-turn run:** All turns had `action_parse_success: true`. Rejections were only `insufficient_budget` (model proposed more spend than available in a single turn). No parse failures, no `out_of_bounds` or `invalid_zone`. See result JSONs in `results/` for per-turn `actions`, `action_outcomes`, and `state`.
 
@@ -151,8 +152,8 @@ This prints a table of mean ± std for population, efficiency, stability, resili
   ```bash
   pytest tests
   ```
-- **Current automated coverage:** `tests/` now covers grid/scorer behavior, prompt feedback formatting, runtime scenario config injection, scenario override application, resumable and filtered experiment execution, experiment CLI/upload behavior, per-run metric extraction, and aggregation summaries.
-- **Latest full suite result:** `pytest tests` passed with `26 passed` at last check.
+- **Current automated coverage:** `tests/` now covers grid/scorer behavior, prompt feedback formatting, runtime scenario config injection, scenario override application, resumable and filtered experiment execution, experiment CLI/upload behavior, per-run metric extraction, aggregation summaries, baseline agents, and experiment runner behavior.
+- **Latest full suite result:** `pytest tests` passed with `56 passed` at last check.
 
 ---
 

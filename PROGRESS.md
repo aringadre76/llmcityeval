@@ -18,14 +18,16 @@
 | **Prompts** | Done | `prompts/system.txt` per spec. |
 | **Benchmark** | Done | `benchmark/logger.py` (RunLog, JSON save); `benchmark/scorer.py` (population, efficiency, stability, resilience, composite); `benchmark/runner.py` (run loop, scoring, save). |
 | **CLI** | Done | `run.py`: `--model`, `--seed`, `--seeds`, `--turns`, `--verbose`, `--compare` with ASCII table + CSV. |
-| **Experiments** | Done | `sim/runtime_config.py` for runtime scenario overrides; `benchmark/experiment_runner.py` applies `config_overrides` per scenario; `benchmark/experiments_cli.py` supports filtered runs, resume, aggregation, and uploads; `benchmark/uploader.py` supports `file://` targets. |
+| **Experiments** | Done | `sim/runtime_config.py` for runtime scenario overrides; `benchmark/experiment_runner.py` applies `config_overrides` per scenario and supports `agent_type` dispatch (`ollama`, `random`, `heuristic`); `benchmark/experiments_cli.py` supports filtered runs, resume, aggregation, uploads, failure inspection, and timelines. |
 | **Packaging** | Done | `requirements.txt` (`requests`, `pytest`), package `__init__.py`s, README. |
 
 ### Verification
 
 - `python3 -m compileall` passes.
-- `pytest tests` passes (`44 passed` at last full run).
+- `pytest tests` passes (`56 passed` at last full run).
+- `ruff check .` passes with minimal enforced rules (`E`, `F`, `W`).
 - Smoke run with dummy agent (5 turns) completes and produces scores.
+- Multi-seed smoke/medium runs with `llama3:8b` complete without errors (see below).
 - No in-code `TODO`/`FIXME` markers at last check.
 
 ### Benchmark runs (llama3:8b)
@@ -34,6 +36,7 @@
 |-----|--------|--------|
 | Smoke | `python3 run.py --seed 42 --turns 5` | Completes; pop/composite low (0–25) as expected for 5 turns. Parse success can vary run-to-run. |
 | Full 50-turn | `python3 run.py --seed 42 --verbose` | Completes; model builds roads + zones, revenue and population appear by ~turn 18; final pop 249, composite 26.56, population score 6.22. |
+| Medium multi-seed | `python3 run.py --model llama3:8b --seeds 42,43,44,45,46 --turns 30` | All five runs complete via local Ollama; normalized population ranges from ≈0.00–1.80 with composites between ≈17–35, confirming stability over longer horizons and multiple seeds. |
 
 **Findings:** All 50 turns had valid JSON (`action_parse_success: true`). Some actions rejected for `insufficient_budget` (21 in one run) when the model proposed more spend than available. No `out_of_bounds` / `invalid_zone` / `exceeded_max_actions` in that run. See [testing.md](testing.md) for details.
 
@@ -54,10 +57,10 @@
 ### Post-MVP priorities
 
 1. Expand benchmark evaluation coverage across more seeds and more models.
-2. Analyze recurring failure patterns (for example, runs that never create connected residential tiles).
-3. Improve benchmark analysis output for easier diagnosis (for example, per-seed failure summaries).
+2. Expand baseline agent policies (for example, budget-aware or connectivity-aware heuristics) for stronger non-LLM references.
+3. Decide and standardize the production upload target contract for HTTPS/S3 (auth, payload shape, retries).
 4. Continue hardening with additional negative-path and malformed-input tests.
-5. Add an HTTP/S3-style upload backend once a central experiment store is chosen.
+5. Optionally wire `metrics.yaml` into runtime aggregation (currently static aggregation code).
 
 ---
 
@@ -73,7 +76,8 @@
 ## Changelog
 
 - **Experiment enhancements:** Added runtime scenario configuration via `sim/runtime_config.py`; threaded it through `sim/city.py`, `sim/disasters.py`, and `benchmark/runner.py`; taught `benchmark/experiment_runner.py` to apply `config_overrides` from `experiments/citybench_v1/config/matrix.yaml`; added `benchmark/experiments_cli.py` for filtered runs, resume, aggregate, and upload; added `benchmark/uploader.py` with `file://` support; documented the workflow in `README.md`.
-- **Experiment test coverage:** Added tests for runtime config injection, scenario override application, resumable/filtered experiment execution, CLI/upload behavior, per-run metric extraction, and aggregation summaries. Full suite passes with `pytest tests` (`44 passed` at last full run).
-- **Hardening + evaluation prep:** Added `pytest` and a full `tests/` suite covering regression cases (disabled-road rebuild cost behavior, robust `--compare` filtering, scorer handling of malformed logs, and rejected-action feedback in prompts) plus unit coverage for grid, mechanics, disasters, city turn logic, and agent JSON parsing.
-- **Benchmark testing:** Ran smoke (5-turn), full 50-turn, and multi-seed runs with llama3:8b; documented results in testing.md; reviewed code and documented four issues (grid disabled road, compare robustness, scorer robustness, action outcomes not in prompt), and analyzed a failure case (seed 456 with no connected residential).
+- **CityBench enhancements:** Added deep-dive diagnostics via `benchmark/inspector.py` and new CLI commands (`inspect`, `timeline`); added baseline agents (`agents/random_agent.py`, `agents/heuristic_agent.py`) and wired `agent_type` dispatch into `benchmark/experiment_runner.py`; extended uploader targets to `s3://` and `https://`; added stress/determinism tests in `tests/test_stress.py`; added CI quality gates in `.github/workflows/ci.yml` with compile, pytest, and ruff checks; added `ruff.toml` and dependency updates in `requirements.txt`.
+- **Experiment test coverage:** Added tests for runtime config injection, scenario override application, resumable/filtered experiment execution, CLI/upload behavior, per-run metric extraction, and aggregation summaries. Full suite passes with `pytest tests` (`56 passed` at last full run).
+- **Hardening + evaluation prep:** Added `pytest` and a full `tests/` suite covering regression cases (disabled-road rebuild cost behavior, robust `--compare` filtering, scorer handling of malformed logs, and rejected-action feedback in prompts) plus unit coverage for grid, mechanics, disasters, city turn logic, agent JSON parsing, baseline agents, and experiment tooling.
+- **Benchmark testing:** Ran smoke (5-turn), full 50-turn, and multi-seed runs with `llama3:8b`; most recent medium multi-seed run (`--seeds 42,43,44,45,46 --turns 30`) completed with composites spanning ≈17–35 and no runtime errors. Results and commands are documented in `testing.md`.
 - **Initial:** MVP implementation completed; all plan phases and todos done. Progress doc added.

@@ -108,7 +108,8 @@ def test_run_experiment_filters_and_resumes_completed_runs(tmp_path: Path, monke
         calls.append((agent.name, seed, sim_config.starting_budget))
         result_path = Path(results_dir) / f"{agent.name}_{seed}_fake.json"
         result_path.parent.mkdir(parents=True, exist_ok=True)
-        result_path.write_text(json.dumps({"agent": agent.name, "seed": seed, "turns": [], "scores": {}}), encoding="utf-8")
+        payload = {"agent": agent.name, "seed": seed, "turns": [], "scores": {}}
+        result_path.write_text(json.dumps(payload), encoding="utf-8")
         return object()
 
     monkeypatch.setattr(experiment_runner, "OllamaAgent", FakeAgent)
@@ -125,3 +126,59 @@ def test_run_experiment_filters_and_resumes_completed_runs(tmp_path: Path, monke
     )
 
     assert calls == [("m1", 1, 3000.0), ("m1", 2, 2000.0), ("m1", 2, 3000.0)]
+
+
+def test_run_experiment_supports_baseline_agent_types(tmp_path: Path, monkeypatch) -> None:
+    matrix_path = tmp_path / "matrix.yaml"
+    matrix_path.write_text(
+        yaml.safe_dump(
+            {
+                "name": "exp1",
+                "models": [
+                    {"id": "random_baseline", "agent_type": "random"},
+                    {"id": "heuristic_baseline", "agent_type": "heuristic"},
+                ],
+                "seeds": [1],
+                "scenarios": [{"id": "default", "config_overrides": {}}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(experiment_runner, "ROOT", tmp_path)
+
+    created: list[tuple[str, str]] = []
+
+    class FakeRandomAgent:
+        def __init__(self, seed: int, name: str = "random_baseline") -> None:
+            _ = seed
+            self.name = name
+            created.append(("random", self.name))
+
+    class FakeHeuristicAgent:
+        def __init__(self, name: str = "heuristic_baseline") -> None:
+            self.name = name
+            created.append(("heuristic", self.name))
+
+    def fake_run_benchmark(*, agent, seed, turns, results_dir, sim_config, verbose=False):
+        _ = seed
+        _ = turns
+        _ = sim_config
+        _ = verbose
+        result_path = Path(results_dir) / f"{agent.name}_1_fake.json"
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"agent": agent.name, "seed": 1, "turns": [], "scores": {}}
+        result_path.write_text(json.dumps(payload), encoding="utf-8")
+        return object()
+
+    monkeypatch.setattr(experiment_runner, "RandomAgent", FakeRandomAgent)
+    monkeypatch.setattr(experiment_runner, "HeuristicAgent", FakeHeuristicAgent)
+    monkeypatch.setattr(experiment_runner, "run_benchmark", fake_run_benchmark)
+
+    experiment_runner.run_experiment(
+        matrix_path,
+        experiment_name="exp1",
+        turns=1,
+    )
+
+    assert ("random", "random_baseline") in created
+    assert ("heuristic", "heuristic_baseline") in created

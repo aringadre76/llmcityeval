@@ -13,7 +13,6 @@ from config import (
     POP_CHANGE_RATE,
     POP_PER_RESIDENTIAL,
     REVENUE_COMMERCIAL,
-    REVENUE_INDUSTRIAL,
     REVENUE_RESIDENTIAL,
 )
 from sim.grid import Grid, ZONE_COMMERCIAL, ZONE_INDUSTRIAL, ZONE_RESIDENTIAL, ZONE_ROAD
@@ -99,7 +98,6 @@ def test_target_and_population_advance() -> None:
     assert next_pop == int(expected_next // 1)
 
     bankrupt_pop = advance_population(current_population=20, target_population=100, bankrupt=True)
-    expected_bankrupt = expected_next * (1 - POP_CHANGE_RATE * 0 + 0) * (1 - 0)  # structure only
     assert bankrupt_pop < next_pop
 
 

@@ -7,7 +7,9 @@ from typing import Any
 
 import yaml
 
+from agents.heuristic_agent import HeuristicAgent
 from agents.ollama import OllamaAgent
+from agents.random_agent import RandomAgent
 from benchmark.runner import run as run_benchmark
 from sim.runtime_config import SimConfig
 
@@ -62,14 +64,28 @@ def build_sim_config_for_scenario(base_config: SimConfig, scenario: dict[str, An
     def clamp_probability(value: float) -> float:
         return max(0.0, min(1.0, value))
 
-    updated["disaster_recession_prob"] = clamp_probability(base_config.disaster_recession_prob * frequency_multiplier)
-    updated["disaster_demand_surge_prob"] = clamp_probability(base_config.disaster_demand_surge_prob * frequency_multiplier)
-    updated["disaster_infra_fail_prob"] = clamp_probability(base_config.disaster_infra_fail_prob * frequency_multiplier)
-    updated["disaster_pollution_prob"] = clamp_probability(base_config.disaster_pollution_prob * frequency_multiplier)
+    updated["disaster_recession_prob"] = clamp_probability(
+        base_config.disaster_recession_prob * frequency_multiplier
+    )
+    updated["disaster_demand_surge_prob"] = clamp_probability(
+        base_config.disaster_demand_surge_prob * frequency_multiplier
+    )
+    updated["disaster_infra_fail_prob"] = clamp_probability(
+        base_config.disaster_infra_fail_prob * frequency_multiplier
+    )
+    updated["disaster_pollution_prob"] = clamp_probability(
+        base_config.disaster_pollution_prob * frequency_multiplier
+    )
 
-    updated["disaster_recession_duration"] = max(1, int(round(base_config.disaster_recession_duration * severity_multiplier)))
-    updated["disaster_demand_surge_duration"] = max(1, int(round(base_config.disaster_demand_surge_duration * severity_multiplier)))
-    updated["disaster_infra_fail_duration"] = max(1, int(round(base_config.disaster_infra_fail_duration * severity_multiplier)))
+    updated["disaster_recession_duration"] = max(
+        1, int(round(base_config.disaster_recession_duration * severity_multiplier))
+    )
+    updated["disaster_demand_surge_duration"] = max(
+        1, int(round(base_config.disaster_demand_surge_duration * severity_multiplier))
+    )
+    updated["disaster_infra_fail_duration"] = max(
+        1, int(round(base_config.disaster_infra_fail_duration * severity_multiplier))
+    )
     updated["pollution_event_increment"] = base_config.pollution_event_increment * severity_multiplier
 
     return base_config.with_updates(**updated)
@@ -86,7 +102,7 @@ def run_experiment(
     resume: bool = False,
 ):
     matrix = load_matrix(matrix_path)
-    models = [m["id"] for m in matrix.get("models", [])]
+    models = matrix.get("models", [])
     seeds = matrix.get("seeds", [])
     scenarios = matrix.get("scenarios", [])
     base_config = SimConfig.from_module()
@@ -102,7 +118,9 @@ def run_experiment(
             writer.writerow(["run_id", "model", "seed", "scenario", "result_path"])
     completed_runs = _load_completed_runs(index_path) if resume else set()
 
-    for model in models:
+    for model_entry in models:
+        model = str(model_entry["id"])
+        agent_type = str(model_entry.get("agent_type", "ollama"))
         if model_filter is not None and model not in model_filter:
             continue
         for seed in seeds:
@@ -117,7 +135,12 @@ def run_experiment(
                     continue
                 print(f"Running model={model} seed={seed} scenario={scenario_id}")
                 sim_config = build_sim_config_for_scenario(base_config, scenario)
-                agent = OllamaAgent(model=model)
+                if agent_type == "random":
+                    agent = RandomAgent(seed=int(seed))
+                elif agent_type == "heuristic":
+                    agent = HeuristicAgent()
+                else:
+                    agent = OllamaAgent(model=model)
                 run_benchmark(
                     agent=agent,
                     seed=seed,

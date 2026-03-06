@@ -96,6 +96,21 @@ Aggregate per-run metrics into summaries:
 python -m benchmark.experiments_cli aggregate --experiment citybench_v1
 ```
 
+Inspect recurring failures for a specific model/scenario:
+
+```bash
+python -m benchmark.experiments_cli inspect \
+  --experiment citybench_v1 \
+  --model llama3:8b \
+  --scenario default
+```
+
+Print a compact timeline for a single run JSON:
+
+```bash
+python -m benchmark.experiments_cli timeline --result results/llama3_8b_42_*.json
+```
+
 Upload summaries to a central filesystem location:
 
 ```bash
@@ -103,6 +118,11 @@ python -m benchmark.experiments_cli upload \
   --experiment citybench_v1 \
   --target file:///tmp/citybench-results
 ```
+
+Additional upload targets:
+
+- `s3://<bucket>/<prefix>` (uploads summary files with boto3)
+- `https://<host>/<path>` (multipart POST to `<target>/<experiment>/`)
 
 Output files:
 - `experiments/citybench_v1/runs/index.csv` — mapping of logical runs to result JSON paths.
@@ -117,3 +137,20 @@ Interpretation notes:
 - `summary_overall.json` is the best file to consume programmatically or upload to another system.
 
 See `experiments/citybench_v1/config/*.yaml` for an example matrix and selected metrics.
+
+## Baseline agents
+
+In addition to Ollama-backed models, the benchmark includes non-LLM baselines:
+
+- `random_baseline` (`agent_type: random`) — random bounded zoning actions.
+- `heuristic_baseline` (`agent_type: heuristic`) — fixed phased pattern (road spine, stripes, industrial edge, road-adjacent fill).
+
+These are included in the default experiment matrix and show up in `summary_by_model.csv` and `summary_overall.json` like any other model.
+
+## Quality gates
+
+Project CI now enforces:
+
+- `python -m compileall . -q`
+- `pytest tests -v`
+- `ruff check .`

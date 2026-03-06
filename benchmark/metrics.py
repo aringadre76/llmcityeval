@@ -72,7 +72,7 @@ def extract_per_run_metrics(
     filename = Path(result_path).stem
     metric_run_id = run_id or f"{experiment}_{filename}"
 
-    # Use existing scorer if available to compute canonical scores (population, efficiency, stability, resilience, composite)
+    # Use existing scorer for canonical population/efficiency/stability/resilience/composite metrics.
     try:
         computed_scores = scorer.score_run(run_data)
     except Exception:

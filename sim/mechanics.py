@@ -54,9 +54,13 @@ def compute_pollution_avg(grid: Grid) -> float:
 
 
 def compute_livability(grid: Grid, pollution_avg: float) -> float:
-    land_use_tiles = sum(1 for t in grid.iter_tiles() if t.zone in (ZONE_RESIDENTIAL, ZONE_COMMERCIAL, ZONE_INDUSTRIAL))
+    land_use_tiles = sum(
+        1 for t in grid.iter_tiles() if t.zone in (ZONE_RESIDENTIAL, ZONE_COMMERCIAL, ZONE_INDUSTRIAL)
+    )
     commercial_tiles = sum(1 for t in grid.iter_tiles() if t.zone == ZONE_COMMERCIAL)
-    developed_tiles = sum(1 for t in grid.iter_tiles() if t.zone in (ZONE_RESIDENTIAL, ZONE_COMMERCIAL, ZONE_INDUSTRIAL))
+    developed_tiles = sum(
+        1 for t in grid.iter_tiles() if t.zone in (ZONE_RESIDENTIAL, ZONE_COMMERCIAL, ZONE_INDUSTRIAL)
+    )
     road_tiles = sum(1 for t in grid.iter_tiles() if t.zone == ZONE_ROAD)
 
     commercial_ratio = (commercial_tiles / land_use_tiles) if land_use_tiles > 0 else 0.0
@@ -74,7 +78,11 @@ def compute_livability(grid: Grid, pollution_avg: float) -> float:
     return clamp(livability, 0.0, 1.0)
 
 
-def compute_target_population(connected_residential_tiles: int, livability: float, demand_surge_divisor: float) -> float:
+def compute_target_population(
+    connected_residential_tiles: int,
+    livability: float,
+    demand_surge_divisor: float,
+) -> float:
     return (
         connected_residential_tiles
         * POP_PER_RESIDENTIAL

@@ -50,3 +50,44 @@ def test_upload_copies_metrics_summaries_for_file_target(tmp_path: Path) -> None
 
     assert (target_dir / "citybench_v1" / "summary_overall.json").exists()
     assert (target_dir / "citybench_v1" / "summary_by_model.csv").exists()
+
+
+def test_cli_inspect_uses_index_and_prints_report(tmp_path: Path, monkeypatch, capsys) -> None:
+    monkeypatch.setattr(experiments_cli, "ROOT", tmp_path)
+    expected_index = tmp_path / "experiments" / "citybench_v1" / "runs" / "index.csv"
+
+    def fake_inspect_failures(index_path, model, scenario):
+        assert index_path == expected_index
+        assert model == "llama3:8b"
+        assert scenario == "default"
+        return [{"seed": 42, "failure_flags": ["final_population_zero"]}]
+
+    monkeypatch.setattr(experiments_cli, "inspect_failures", fake_inspect_failures)
+    monkeypatch.setattr(
+        experiments_cli,
+        "format_failure_report",
+        lambda records: f"records={len(records)}",
+    )
+
+    experiments_cli.main(
+        [
+            "inspect",
+            "--experiment",
+            "citybench_v1",
+            "--model",
+            "llama3:8b",
+            "--scenario",
+            "default",
+        ]
+    )
+    output = capsys.readouterr().out
+    assert "records=1" in output
+
+
+def test_cli_timeline_prints_table(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(experiments_cli, "timeline", lambda _path: "turn | pop | budget")
+
+    experiments_cli.main(["timeline", "--result", "results/run.json"])
+
+    output = capsys.readouterr().out
+    assert "turn | pop | budget" in output

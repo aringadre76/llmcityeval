@@ -9,8 +9,16 @@ baseline_model: llama3:8b
 models:
   - id: llama3:8b
     label: LLaMA 3 8B
+    agent_type: ollama
   - id: llama3:70b
     label: LLaMA 3 70B
+    agent_type: ollama
+  - id: random_baseline
+    label: Random Baseline
+    agent_type: random
+  - id: heuristic_baseline
+    label: Heuristic Baseline
+    agent_type: heuristic
 
 seeds: [42, 43, 44, 45, 46]
 

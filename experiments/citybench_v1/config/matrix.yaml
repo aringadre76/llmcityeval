@@ -13,6 +13,9 @@ models:
   - id: llama3:70b
     label: LLaMA 3 70B
     agent_type: ollama
+  - id: qwen2.5-coder:7b
+    label: Qwen2.5 Coder 7B
+    agent_type: ollama
   - id: random_baseline
     label: Random Baseline
     agent_type: random

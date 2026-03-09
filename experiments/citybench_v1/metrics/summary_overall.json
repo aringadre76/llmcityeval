@@ -1,0 +1,134 @@
+{
+  "experiment": "citybench_v1",
+  "metrics": {
+    "default": {
+      "heuristic_baseline": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 37.866074766084935,
+          "std": 0.2852476971079961,
+          "min": 37.53849300748779,
+          "max": 38.256408375551906
+        },
+        "hard_constraint_violations": {
+          "mean": 7.2
+        },
+        "avg_recovery_turns": {
+          "mean": 2.6014743589743587
+        }
+      },
+      "llama3:70b": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 25.0,
+          "std": 0.0,
+          "min": 25.0,
+          "max": 25.0
+        },
+        "hard_constraint_violations": {
+          "mean": 0
+        },
+        "avg_recovery_turns": {
+          "mean": 0.9703296703296703
+        }
+      },
+      "llama3:8b": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 28.648084362352765,
+          "std": 6.1019710545837835,
+          "min": 25.0,
+          "max": 42.061697336611516
+        },
+        "hard_constraint_violations": {
+          "mean": 10.2
+        },
+        "avg_recovery_turns": {
+          "mean": 1.3946886446886446
+        }
+      },
+      "random_baseline": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 32.248431821442956,
+          "std": 6.790461565441429,
+          "min": 25.0,
+          "max": 41.32581440898201
+        },
+        "hard_constraint_violations": {
+          "mean": 128.2
+        },
+        "avg_recovery_turns": {
+          "mean": 2.388717948717949
+        }
+      }
+    },
+    "disasters_heavy": {
+      "heuristic_baseline": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 37.866074766084935,
+          "std": 0.2852476971079961,
+          "min": 37.53849300748779,
+          "max": 38.256408375551906
+        },
+        "hard_constraint_violations": {
+          "mean": 7.2
+        },
+        "avg_recovery_turns": {
+          "mean": 2.6014743589743587
+        }
+      },
+      "llama3:70b": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 25.0,
+          "std": 0.0,
+          "min": 25.0,
+          "max": 25.0
+        },
+        "hard_constraint_violations": {
+          "mean": 0
+        },
+        "avg_recovery_turns": {
+          "mean": 0.9703296703296703
+        }
+      },
+      "llama3:8b": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 25.03688855971496,
+          "std": 3.7325817619292,
+          "min": 16.379114145658264,
+          "max": 32.96926934959628
+        },
+        "hard_constraint_violations": {
+          "mean": 8.9
+        },
+        "avg_recovery_turns": {
+          "mean": 2.0635113660848954
+        }
+      },
+      "random_baseline": {
+        "num_runs": 10,
+        "final_score": {
+          "mean": 32.05534669524388,
+          "std": 6.552899353753767,
+          "min": 25.0,
+          "max": 39.8199777993972
+        },
+        "hard_constraint_violations": {
+          "mean": 128.2
+        },
+        "avg_recovery_turns": {
+          "mean": 2.704102564102564
+        }
+      }
+    }
+  },
+  "baseline_model": null,
+  "best_model_by_final_score": {
+    "default": "heuristic_baseline",
+    "disasters_heavy": "heuristic_baseline"
+  }
+}

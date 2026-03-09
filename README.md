@@ -4,6 +4,19 @@ CityBench is a city-building benchmark where an LLM acts as an urban planner.
 Each turn, the model receives structured city state JSON and returns zoning actions.  
 The simulator advances deterministically (given a seed), logs every turn, and computes final scores.
 
+## Current evaluation takeaways
+
+Current benchmark results for `llama3:8b` show a clear split between reliability and planning quality:
+
+- It is a strong constrained decision engine: outputs stayed valid, schema adherence was reliable, and executed runs completed without HTTP/JSON failures or simulator crashes.
+- It makes locally sensible, grid-aware moves, but long-horizon planning is weak. Over 30-50 turns, scores tend to cluster in a middling range rather than consistently producing strong cities.
+- Performance is sensitive to seed, which suggests a brittle policy that reacts myopically to early conditions instead of following a robust global strategy.
+- It respects rules better than it optimizes for long-term growth: the common failure mode is not illegal actions, but mediocre city development.
+
+Practical takeaway: `llama3:8b` is useful for testing protocol adherence and benchmarking constrained decision-making, but it is not yet a high-quality autonomous urban planner in CityBench. A stronger planner will likely require a better model, richer scaffolding such as planning/search loops, or a hybrid LLM-plus-heuristic approach.
+
+These conclusions apply to `llama3:8b` under the current CityBench settings. Supporting notes and run history are documented in `MODEL_EVALUATION_CONCLUSIONS.md`, `PROGRESS.md`, and `testing.md`.
+
 ## Requirements
 
 - Python 3.10+

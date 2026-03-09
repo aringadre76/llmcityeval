@@ -132,6 +132,31 @@ python3 run.py --seed 42 --verbose
 
 ---
 
+## Switching models
+
+You can change the default Ollama model for quick runs by setting an environment variable:
+
+```bash
+export CITYBENCH_MODEL="qwen2.5-coder:7b"
+```
+
+Then a standard single-seed run will use that model:
+
+```bash
+python3 run.py --seed 42
+```
+
+To run the full CityBench experiment matrix for a specific model (with the same seeds and scenarios as other runs):
+
+```bash
+python3 -m benchmark.experiments_cli run \
+  --matrix experiments/citybench_v1/config/matrix.yaml \
+  --experiment citybench_v1 \
+  --model qwen2.5-coder:7b
+```
+
+---
+
 ## Comparing results
 
 After running multiple models or seeds, aggregate and compare scores:

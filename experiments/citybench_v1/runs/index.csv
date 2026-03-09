@@ -94,3 +94,4 @@ citybench_v1_llama3_8b_seed43_default,llama3:8b,43,default,/home/robot/llmcityev
 citybench_v1_llama3_8b_seed43_disasters_heavy,llama3:8b,43,disasters_heavy,/home/robot/llmcityeval/results/llama3_8b_43_20260309T211532Z.json
 citybench_v1_qwen2.5-coder_7b_seed45_disasters_heavy,qwen2.5-coder:7b,45,disasters_heavy,/home/robot/llmcityeval/results/qwen2.5-coder_7b_45_20260309T211637Z.json
 citybench_v1_qwen2.5-coder_7b_seed46_default,qwen2.5-coder:7b,46,default,/home/robot/llmcityeval/results/qwen2.5-coder_7b_46_20260309T211904Z.json
+citybench_v1_qwen2.5-coder_7b_seed46_disasters_heavy,qwen2.5-coder:7b,46,disasters_heavy,/home/robot/llmcityeval/results/qwen2.5-coder_7b_46_20260309T212059Z.json

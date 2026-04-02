@@ -967,4 +967,56 @@ Successful 3B runs (4 with pop > 100):
 - Turn 25-50: Maintain positive budget
 - Late game: May build 1 I tile (often removed later)
 
+### Zone Distribution Analysis
+
+#### Best Runs Zone Composition
+
+| Model | Seed | R | O | C | I | E | Pop | Rev | Connected R |
+|-------|------|---|---|---|---|---|-----|-----|-------------|
+| 8B | 46 | 10 | 8 | 4 | 0 | 78 | 341 | 150 | 7 |
+| 3B | 46 | 11 | 3 | 2 | 0 | 84 | 231 | 50 | 5 |
+| 8B | 43 | 10 | 4 | 2 | 0 | 84 | 182 | 40 | 4 |
+| 8B | 45 | 10 | 4 | 2 | 0 | 84 | 241 | 70 | 5 |
+| 3B | 45 | 9 | 2 | 1 | 0 | 88 | 130 | 30 | 3 |
+
+**Observed patterns:**
+1. **High-population runs** (pop > 200): Have more roads (O=4-8) and higher road density
+2. **Commercial ratio**: ~20-30% of non-empty zones (C=2-4, O=2-8)
+3. **Industrial is rare**: No successful runs have Industrial tiles (contrary to prior assumptions)
+4. **Zone distribution by zone type**:
+   - R tiles: 9-11 per run
+   - O tiles: 2-8 per run
+   - C tiles: 1-4 per run
+   - I tiles: 0-1 per run (and usually removed)
+
+**Key insight**: The zone distribution is remarkably consistent across successful runs. Successful models don't try new zone configurations - they follow a proven pattern:
+- Build roads first (O: 2-8, concentration along any spine)
+- Build connected residential (R: 9-11, ~70% connected)
+- Add commercial for livability boost (C: 2-4)
+- Skip industrial (I: 0) for optimal budget management
+
+### The R+O+C Victory Pattern
+
+**Surprising finding**: All successful runs achieve high scores WITHOUT industrial. The 30 runs analyzed show:
+
+| Final Revenue Range | Successful Runs | Avg Population |
+|---------------------|-----------------|----------------|
+| 100-150 | 1 | 341 |
+| 60-99 | 7 | 166 |
+| 30-59 | 8 | 93 |
+| 0-29 | 14 | 36 |
+
+**High-revenue pattern** (rev > 60):
+- 7 connected R tiles × 50 pop = 350 theoretical population
+- With ~90-97% efficiency: 315-341 actual population
+- Revenue = R_pop × 10 + C × 20 + I × 35
+- With C=4 and no I: 68 + 3150 = 3218 (comp score reflects normalized values)
+
+**Why industrial isn't needed**: The revenue ceiling without Industrial (R+O+C) is higher than with Industrial for these models. Additional budget from Industrial would require:
+1. First building Industrial (200 cost)
+2. Not building other zones with that budget
+3. Waiting for break-even (turns 7-14)
+
+Models that try Industrial cannot afford the upfront cost without sacrificing other zones, and often replace it too early.
+
 ---

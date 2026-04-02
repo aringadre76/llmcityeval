@@ -722,6 +722,26 @@ The conversion from connected R tiles to population is remarkably consistent acr
 - 3B seed46 (pop=231): R=10, O=2, C=1, I=0
 - Successful runs achieve high scores WITHOUT Industrial, proving R+O+C can generate 30-38 composite
 
+### Final State Analysis
+
+Final state patterns reveal **zero revenue** as the key failure mode in 14 runs:
+
+| Category | Runs | avg_pop | avg_budget | avg_rev | avg_exp |
+|----------|------|---------|------------|---------|---------|
+| High success (comp>35) | 1 | 243 | 180 | 70 | 28 |
+| Mid success (30-35) | 7 | 193 | 16 | 61 | 32 |
+| Low success (25-30) | 19 | 24.5 | 236 | 9 | 14 |
+| Fail (pop=0, comp=25) | 14 | 0 | 310 | 0.7 | 10 |
+
+**Key insights:**
+- Failed runs have near-zero revenue (0.7) despite having budget (310) - not a budget problem
+- Zero revenue stems from:
+  - No Industrial (no 35/tick tax)
+  - No connected R tiles (no 10/tick tax from population)
+- Low-revenue runs (25-30) often stall due to low connected population
+
+**The real bottleneck isn't just budget or Industrial** - it's generating any meaningful tax revenue. Without revenue, models can't afford roads or Additional zones.
+
 ### Action Effectiveness
 
 Analysis of 3B seed46's successful run (pop=231, composite=33.88) reveals this critical pattern:

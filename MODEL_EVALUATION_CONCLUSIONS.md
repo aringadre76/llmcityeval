@@ -1058,4 +1058,62 @@ The difference between success and failure is **not zone quantity** - it's **zon
 
 **3B consistency**: More successful runs (8 vs 6), but each is lower quality. 3B is better at avoiding total failure but worse at generating high scores.
 
+### The Action Loop Problem (Confirmed)
+
+Deep analysis of seed 42 runs reveals the **Action Loop Problem** - models get stuck in repetitive behavior:
+
+**8B seed42 (failed run):**
+```
+Turn 0: O at (1,0)
+Turn 1: R at (3,3), O at (5,4)
+Turn 2: R at (3,3)
+Turn 3: R at (3,3)
+Turn 4: R at (3,3), O at (5,4)
+Turn 5: R at (3,3)
+...
+Turn 14: R at (3,3), C at (4,3)
+```
+
+**Issue**: The model builds **R at (3,3) 13 times** without ever connecting it to roads. The road tiles are at (1,0), (5,4), (1,4) - none adjacent to (3,3). Each R build costs 0 (same zone) but wastes the decision slot.
+
+**Successful 8B seed42:**
+```
+Turn 1: O at (3,4) - FIRST ROAD
+Turn 2: O at (2,2), R at (1,2)
+Turn 3: O at (4,2), R at (3,4)
+Turn 4: R at (4,4) - FIRST CONNECTED R!
+Turn 5-15: Expanding road network + building more R
+```
+
+**Key difference**: The successful run builds **roads first**, then adds R tiles that are adjacent to roads. The failed run builds Rtiles in isolation, never connecting them.
+
+**Root cause**: Models don't track the grid state across turns. They see "R tile available" but don't recognize that building on the same tile repeatedly has no effect. This is a fundamental flaw in the prompt window - the model's context doesn't persist beyond a few turns.
+
+### Practical Recommendations
+
+Based on the 30-run analysis, the optimal strategy for LLM planners in CityBench is:
+
+1. **Phase 1 (Turns 0-5): Build road spine first**
+   - Commit to building roads for first 5 turns
+   - Ensure at least one road connects to first R tiles
+   - Don't build R until connected to roads
+
+2. **Phase 2 (Turns 6-15): Scale connected residential**
+   - Build R tiles adjacent to existing roads
+   - Maintain ~70% R tile connectivity
+   - Keep budget > 50 for flexibility
+
+3. **Phase 3 (Turns 16-35): AddCommercial for livability**
+   - Build C tiles at 20-30% of R tiles
+   - Prioritize C near existing R for revenue
+   - Avoid Industrial (not needed for high scores)
+
+4. **Phase 4 (Turns 36-50): Scale based on space**
+   - Add more R if space available
+   - Maintain budget > 0
+   - Done - no late-game changes needed
+
+**Critical rule**: If budget < 100 OR population = 0, focus exclusively on roads. No other zone should be built.
+
 ---
+

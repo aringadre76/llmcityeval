@@ -34,6 +34,49 @@ Conclusions from running the CityBench benchmark with **llama3:8b** and **llama3
 
 ---
 
+## Action Patterns and Strategy
+
+### Critical Finding: Industrial Zone Avoidance
+
+During deep analysis of action sequences, a fundamental behavioral difference emerged:
+
+| Metric | llama3:8b | llama3.2:3b |
+|--------|-----------|-------------|
+| Avg Industrial tiles per run | 2.9 | 0.3 |
+| Max Industrial tiles in any run | 5 | 2 |
+
+**Both models avoid Industrial zones entirely during the early-to-mid game.** Industrial tiles:
+- Cost 200 (highest upfront investment)
+- Generate 35/revenue (highest tax)
+- Have 1 upkeep + nearby pollution costs
+
+The models procrastinate Industrial construction until the very end (turns 45-50) when they've accumulated enough budget. By then, it's too late to significantly impact the final score.
+
+### Strategic Pattern Emergence
+
+**Successful runs share this pattern:**
+1. **Turns 0-10**: Build roads and some residential tiles
+2. **Turns 11-30**: Scale residential zones for population growth
+3. **Turns 31-45**: Build commercial zones to boost livability and tax
+4. **Turns 46-50**: Finally add Industrial (only if budget allows)
+
+**Why Industrial is avoided:**
+- 8B model: Cannot commit to long-term investment despite understanding its benefits
+- 3B model: Does not understand the ROI calculus at all; treats Industrial as optional rather than optimal
+
+### Failure Modes by Model
+
+**llama3:8b failure modes:**
+- Budget exhaustion before Industrial can be built (e.g., seed 45: population = 0)
+- Building too many high-upkeep zones without enough revenue (e.g., seed 43: composite = 22.36)
+
+**llama3.2:3b failure modes:**
+- Never builds Industrial at all (18 runs, 0 Industrial built total)
+- Cannot navigate budget constraints effectively
+- Demonstrates no understanding of investment-to-reward timing
+
+---
+
 ## Planning Quality
 
 ### Locally Reasonable, Globally Weak
@@ -41,6 +84,7 @@ Conclusions from running the CityBench benchmark with **llama3:8b** and **llama3
 - Both models produce **valid, grid-aware actions**: zones in-bounds, legal zone types, no nonsensical moves
 - Neither model reliably drives toward high-population, high-score cities over 50 turns
 - Performance is **highly seed-sensitive**, suggesting reactive rather than strategic behavior
+- **No emergent strategy**: Each run shows different patterns; no consistent "best practice" across runs
 
 ### Strengths
 
@@ -51,28 +95,44 @@ Conclusions from running the CityBench benchmark with **llama3:8b** and **llama3
 ### Limitations
 
 1. **Weak long-horizon planning**: No consistent pattern of early investment leading to late growth
-2. **Budget as constraint, not tool**: Models react to budget limits but don't strategically.front-load investments
+2. **Budget as constraint, not tool**: Models react to budget limits but don't strategically front-load investments
 3. **No global strategy**: No consistent road network design or zone placement pattern across runs
-4. **seed sensitivity**: Small perturbations in early turns lead to qualitatively different trajectories
+4. **Seed sensitivity**: Small perturbations in early turns lead to qualitatively different trajectories
+5. **Late Industrial投产**: Both models defer Industrial until turn 45+, missing opportunity to benefit for most of the game
 
 ---
 
 ## Disaster Scenario Performance
 
-### Critical Finding: llama3.2:3b Floor Performance
-- **All 5 runs achieved exactly 25.0 composite score** (minimum possible)
-- Final population = 0 in disaster runs
-- This indicates a **fundamental failure mode** rather than stochastic bad luck
-- During disasters, models struggle to coordinate actions effectively
+### Critical Finding: Stress Reveals Different Failure Modes
 
-### llama3:8b under Stress
-- Composite scores range from 25.0 to 32.67 (some success mixed with failures)
-- Better at maintaining minimal city function during disasters
-- Still shows significant variation, indicating stress exposes fragility
+**llama3.2:3b disaster runs:**
+- **All 5 runs hit the floor score (25.0)** with 0 population
+- The model's Industrial avoidance becomes fatal under stress
+- Budget exhaustion happens faster due to lower tax revenue (no Industrial)
+- no mitigation strategy emerges; the model simply continues building R without adjusting
 
-**Interpretation:**灾难 scenarios disproportionately hurt the smaller model, possibly due to:
-- Reduced capacity for multi-step planning under time pressure
-- Weaker ability to balance immediate needs (budget) with long-term survival
+**llama3:8b disaster runs:**
+- Composite scores range from 25.0 to 32.67 (more variance than 3B)
+- Some runs maintain minimal city function while others collapse
+- Better budget management allows occasional survival
+- Still lacks robust disaster mitigation strategy
+
+**Root cause:** Both models treat disasters as external events they must react to, not as part of a strategic planning problem. A successful strategy would:
+1. Build Industrial earlier to generate extra revenue for disaster buffer
+2. Maintain surplus budget before disaster events
+3. Have contingency plans when revenue is reduced
+
+**Neither model demonstrates this level of strategic planning.**
+
+### Run-to-Run Variance Analysis
+
+| Model | Default std dev | Disaster std dev | Interpretation |
+|-------|-----------------|------------------|----------------|
+| llama3:8b | 6.06 | 3.44 | Better disaster performance but still high variance |
+| llama3.2:3b | 4.05 | 0.00 | Disaster runs all floor; no variance because no success possible |
+
+The 3B model's disaster std dev of 0.0 is not a strength—it indicates all runs hit the same floor.
 
 ---
 
@@ -91,30 +151,42 @@ Conclusions from running the CityBench benchmark with **llama3:8b** and **llama3
 ## Overall Conclusions
 
 ### llama3:8b Assessment
-- **Strengths:** Stronger planning, better disaster resilience, lower invalid action rate
-- **Limitations:** Still myopic, seed-sensitive, no dominant strategy emerges
+- **Strengths:** Stronger planning, better disaster resilience, lower invalid action rate, reaches higher population ceiling (342 vs 232)
+- **Limitations:** Still myopic, seed-sensitive, no dominant strategy emerges, delays Industrial until endgame
 - **Verdict:** Reliable decision engine but not yet a high-quality autonomous planner
 
 ### llama3.2:3b Assessment
-- **Strengths:** Technically competent within constraints
-- **Limitations:** Fragile under stress, frequent invalid actions, poor long-horizon coordination
-- **Verdict:** Not competitive for autonomous urban planning in this benchmark
+- **Strengths:** Technically competent within constraints, produces valid JSON
+- **Limitations:** Does not understand Industrial ROI, cannot navigate budgetconstraints, low ceiling (max 232), frequent floor performance (all disaster runs at 25.0)
+- **Verdict:** Not competitive for autonomous urban planning in this benchmark; fails to understand investment-to-reward timing
 
 ---
 
 ## Practical Takeaways
 
-1. **Model scale matters** - The 8B model consistently outperforms the 3B model by a meaningful margin
+1. **Model scale matters** - The 8B model consistently outperforms the 3B model by a meaningful margin, achieving higher population ceilings (342 vs 232)
 
-2. **Stress tests reveal fragility** - Disaster scenarios amplify differences between models; the 3B model fails completely
+2. **Stress tests reveal different failure modes** - Disaster scenarios amplify differences:
+   - 3B model: All disaster runs hit floor score (25.0) due to no Industrial
+   - 8B model: Some survive, some fail (ceiling 32.67, floor 25.0)
 
-3. **LLMs are not yet competitive with tailored heuristics** - Based on the expected strong performance of a well-designed heuristic agent (e.g., road spine + zone stripes), LLMs would likely lose on average
+3. **Industrial zone timing is critical** - The key insight from action analysis:
+   - Both models avoid Industrial until the last 5 turns (turns 45-50)
+   - Industrial provides 35 revenue/tick but costs 200 upfront + 1 upkeep
+   - Delaying Industrial means missing 45+ turns of revenue gain
+   - The models don't understand the ROI timing calculus
 
-4. **To improve LLM planning:**
-   - More capable models or larger scale may help
-   - Richer prompting with explicit planning loops could help
-   - Self-critique or search-based methods (e.g., tree search, beam search) could improve robustness
-   - Hybrid approaches combining LLM with learned/heuristic policies would likely outperform pure LLM
+4. **LLMs are not yet competitive with tailored heuristics** - A well-designed heuristic could:
+   - Build Industrial earlier (turn 20-30) to maximize benefit
+   - Maintain budget buffer for disasters
+   - Scale Industrial based on available revenue, not just available budget
+
+5. **To improve LLM planning:**
+   - **Explicit budget-to-revenue mapping**: Teach the model that Industrial costs 200 but generates 35/tick (ROI ~5.7x after 7 ticks)
+   - **Earlier Industrial investment**: Encourage building Industrial by turn ~25-35
+   - **Disaster budget management**: Train or prompt for maintaining 300+ budget as emergency reserve
+   - **Multi-step prompting**: Use chain-of-thought or tree search to plan months ahead
+   - **Hybrid approaches**: Combine LLM with a heuristic that suggests an Industrial build strategy
 
 ---
 

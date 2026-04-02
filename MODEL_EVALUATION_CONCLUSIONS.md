@@ -1460,6 +1460,33 @@ Infrastructure failures disable roads temporarily:
 - Effect: Road at (x,y) becomes `disabled=True`
 - Impact: Any zone tiles adjacent to disabled road become disconnected, losing revenue
 
+### Industrial ROI Misunderstanding (2026-04-02)
+
+Models build Industrial but frequently bulldoze it within 2-24 turns:
+
+| Model | Run | First I | Longevity | Final I | Pop | Rev |
+|-------|-----|---------|-----------|---------|-----|-----|
+| 8B | seed43 | 20 | 30 turns | No | 183 | 40 |
+| 8B | seed46 | 4 | 46 turns | No | 342 | 150 |
+| 8B | seed42 | 22 | 28 turns | No | 242 | 90 |
+| 8B | seed45 | 13 | 37 turns | No | 242 | 70 |
+| 3B | seed46 | 9 | 41 turns | No | 232 | 50 |
+| 3B | seed42 | 16 | 34 turns | Yes | 33 | 10 |
+| 3B | seed46 | 6 | 44 turns | No | 64 | 10 |
+
+**Pattern**: Industrial is removed to save upkeep (I=2 vs R=1). However:
+- Industrial generates 35/tick for ~45 turns = ~1575 total revenue
+- Build cost: 200, Total upkeep: ~90
+- **Net profit: ~1300**
+- Bulldozing after 2-4 turns wastes ~1200 potential revenue
+
+**Root cause**: Models have a **myopic 8-turn planning horizon**, focusing on immediate budget stress rather than long-term ROI.
+
+**Strategic implication**: Models should:
+1. Build Industrial early (turns 10-20 optimal)
+2. Keep it throughout the game
+3. Use the revenue buffer to weather budget downswing
+
 ---
 
 

@@ -1423,7 +1423,45 @@ The llama3:8b seed 46 experiment shows dramatically different outcomes across ru
 - Runs that go negative stay negative 88% of the time
 - Recovery requires both positive budget AND connected R tiles to generate revenue
 
+### Revenue Calculation and Disaster Impact (2026-04-02)
+
+The revenue calculation is deterministic based on connected zones:
+- Connected Residential: 10 revenue/tick
+- Connected Commercial: 20 revenue/tick
+- Connected Industrial: 35 revenue/tick
+
+**Disaster Impact Revenues**:
+- **Recession**: Revenue is halved (`revenue *= 0.5 ** recession_count`)
+- **Demand Surge**: Does NOT affect revenue, only reduces population capacity (`target_pop` divided by `demand_surge_divisor`)
+
+**Analysis of Revenue Mismatches**:
+Initial investigation showed 3B runs with revenue lower than expected (e.g., expected 50, actual 25). Upon detailed analysis:
+
+1. **3B seed46 pop=140, rev=25**:
+   - Expected: R=3×10 + C=1×20 = 50
+   - Actual: 25
+   - Events: `['RECESSION ONGOING: 1 ticks remaining.']`
+   - **Explanation**: Single active recession halves revenue (50×0.5=25) ✓
+
+2. **3B seed46 pop=64, rev=10**:
+   - Expected: R=2×10 = 20
+   - Actual: 10
+   - Events: `['RECESSION ONGOING: 2 ticks remaining.', 'DEMAND SURGE ONGOING: 3 ticks remaining.']`
+   - **Explanation**: Revenue halved due to active recession (20×0.5=10) ✓
+
+**Key finding**: All "revenue discrepancies" are explained by active recessions. The 3B model simply runs during more recessions than the 8B model, reducing its effective revenue output.
+
+**Strategic implication**: Models should build commercial/industrial zones to increase revenue **buffer** that can weather recessions. A budget of +50 with 50 revenue/tick can survive one recession (50→25 revenue) while staying positive.
+
+### Road Disabled Events (2026-04-02)
+
+Infrastructure failures disable roads temporarily:
+- Duration: 2 ticks
+- Effect: Road at (x,y) becomes `disabled=True`
+- Impact: Any zone tiles adjacent to disabled road become disconnected, losing revenue
+
 ---
+
 
 
 

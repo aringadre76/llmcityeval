@@ -460,3 +460,31 @@ The llama3:8b seed 46 experiment shows dramatically different outcomes across ru
 **Failed recovery attempts**:
 - Runs that go negative stay negative 88% of the time
 - Recovery requires both positive budget AND connected R tiles to generate revenue
+
+### The Universal Connected R Rule (2026-04-02)
+
+**Critical finding**: **ALL failed runs have 0 connected R tiles**, regardless of how many R tiles were built.
+
+**8B failed runs** (6 runs):
+- 8B seed46: R=2(0c) - no roads built
+- 8B seed45: R=2(0c) - no roads built
+- 8B seed43: R=1(0c), budget=1850, rev=0 - no roads, single disconnected R
+- 8B seed42: R=1(0c), R=2(0c) - roads but no adjacent R tiles
+- 8B seed42: R=1(0c), budget=1895 - no roads, single disconnected R
+
+**3B failed runs** (10 runs):
+- All have R=4-12 tiles with 0 connected
+- Revenue=0 despite building many R tiles
+- Budget varies from -437 to -71
+
+**Successful runs**:
+- All have at least 2-7 connected R tiles
+- Connection happens when roads are built WITH R tiles placed adjacently
+
+**The root cause**: Models misunderstand or ignore the connectivity rule. They build R tiles in isolation without ensuring road adjacency. This is a **foundational misunderstanding** of the game mechanics.
+
+**9B vs 3B difference**:
+- 8B: 6/12 successful (50%), avg pop 205.8
+- 3B: 8/18 successful (44%), avg pop 110.4
+- 8B builds roads earlier and integrates R tiles better
+- 3B builds more R tiles but with lower connectivity

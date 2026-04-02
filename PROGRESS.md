@@ -93,7 +93,10 @@ New comprehensive evaluation report documenting the first comparative experiment
 - **llama3:8b outperforms llama3.2:3b** by ~5-6 points on average
 - **Disaster scenario reveals fragility**: 3B model hits floor score (25.0) in all runs with zero population
 - **8B model shows moderate seed sensitivity** but better disaster resilience (scores 25-32.7)
-- **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon credit assignment
+- **Deep insight**: Both models delay Industrial zones until turn 45-50, missing opportunity for 45+ turns of revenue gain
+- **Key finding**: 3B model never builds Industrial (avg 0.3/run vs 2.9 for 8B), explaining its poor performance
+- **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon planning and misunderstanding ROI timing
+- **Practical recommendation**: Train/prompt for Industrial ROI awareness (200 cost → 35/tick for 45+ turns = ~8x ROI)
 
 ---
 

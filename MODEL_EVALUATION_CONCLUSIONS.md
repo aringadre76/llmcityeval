@@ -230,6 +230,65 @@ Both models handle:
 
 ---
 
+## Deep Insights: When Industrial is Built
+
+### Industrial Turn Distribution
+
+| Model | Runs with Industrial | Avg Industrial Turn | Turn Range |
+|-------|---------------------|---------------------|------------|
+| llama3:8b | 6/11 runs | Turn 23-30 | 3-49 |
+| llama3.2:3b | 2/18 runs | Turns 8 & 42 | 8, 42 |
+
+### Industrial Timing Analysis
+
+**Llama-3:8B (6 runs built Industrial)**
+- Buildings at **turns 3-49** (varied, early-to-late)
+- Successful runs: Industrial built around **turns 12-35**
+- Example success: Turn 3, 10, 31, 33, 49 (seed 46 - pop 342)
+- Example failure: No Industrial built (population stuck at 0)
+
+**Llama-3.2:3B (2 runs built Industrial)**
+- Only 6 Industrial tiles ever built across all runs
+- One build at **turn 8** (seed 46) - built early but missing key pattern
+- One build at **turn 42** (seed 46) - too late for significant impact
+- 16 of 18 runs NEVER built Industrial
+
+### Connection Between Industrial and Success
+
+| Model | Built Industrial? | Population | Composite |
+|-------|------------------|------------|-----------|
+| 8B | Yes | 165-342 | 25-38 |
+| 8B | No | 0 | 25 |
+| 3B | Yes | 113-232 | 25-34 |
+| 3B | No | 0 | 25 |
+
+**Pattern:** Industrial is **necessary but not sufficient** for high scores. Success requires:
+1. Building Industrial (catching the 3B model's fundamental failure)
+2. Building it with enough budget (turns 20-35 range is optimal)
+3. Not overextending budget (must balance upkeep costs)
+
+### Root Cause of 3B Model Failure
+
+Looking at 3B's worst runs (pop=0, composite=25):
+- **Turn 0**: Budget=2000, revenue=0, no Industrial
+- **Turn 20**: Budget=819, revenue=0, no Industrial  
+- **Turn 40**: Budget=191, revenue=0, no Industrial
+- **Turn 50**: Budget=-94, revenue=0, no Industrial, pop=0
+
+The 3B model gets stuck in a **poverty trap**:
+1. No Industrial → no revenue from tax
+2. Building Residential without Roads → no population (disconnected tiles)
+3. No population → no tax revenue → can't afford anything useful
+4. Budget runs negative → bankruptcy penalty on population
+
+The 8B model either:
+- Breaks out with early Industrial + Roads to enable revenue
+- Or gets stuck in the same poverty trap (no Industrial)
+
+This reveals the **true bottleneck**: **break-even time** - the time between budget expenditure and tax revenue generation. The 3B model can't bridge this gap.
+
+---
+
 ## Model Comparison Summary
 
 | Aspect | llama3:8b | llama3.2:3b |

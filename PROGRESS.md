@@ -88,6 +88,13 @@ Ran CityBench benchmark with llama3:8b and llama3.2:3b across 5 seeds (42-46) an
 - `pytest tests` passes (87 passed)
 - `ruff check .` passes
 
+### MODEL_EVALUATION_CONCLUSIONS.md
+New comprehensive evaluation report documenting the first comparative experiment:
+- **llama3:8b outperforms llama3.2:3b** by ~5-6 points on average
+- **Disaster scenario reveals fragility**: 3B model hits floor score (25.0) in all runs with zero population
+- **8B model shows moderate seed sensitivity** but better disaster resilience (scores 25-32.7)
+- **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon credit assignment
+
 ---
 
 ## TODO

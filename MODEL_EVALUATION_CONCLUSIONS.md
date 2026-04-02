@@ -1197,6 +1197,59 @@ Analysis of 30 runs reveals a consistent pattern:
 
 These are fundamental limitations that require architectural changes (not just prompt tuning) to overcome.
 
+### Population Thresholds (Confirmed)
+
+Analysis of 30 runs reveals clear population thresholds based on connected R tiles:
+
+| Connected R | Runs | Avg Pop | Min Pop | Max Pop |
+|-------------|------|---------|---------|---------|
+| 0 | 16 | 0.0 | 0 | 0 |
+| 1 | 2 | 49.0 | 33 | 65 |
+| 2 | 3 | 77.7 | 69 | 89 |
+| 3 | 3 | 128.7 | 118 | 138 |
+| 4 | 2 | 175.5 | 169 | 182 |
+| 5 | 3 | 238.3 | 231 | 243 |
+| 7 | 1 | 341.0 | 341 | 341 |
+
+**Threshold insights:**
+- **1 connected R tile**: ~50 population (first population milestone)
+- **3 connected R tiles**: ~129 population (can generate meaningful tax revenue)
+- **5 connected R tiles**: ~240 population (high scoring run)
+- **7 connected R tiles**: ~341 population (best observed score)
+
+The population ceiling is approximately **50 × connected_R** with ~90-95% efficiency.
+
+### Revenue Ceiling Analysis
+
+Revenue is determined by connected population × 10 + Commercial × 20 + Industrial × 35.
+
+**Key observation**: Successful runs show:
+- **Without Industrial**: Revenue天花板 = ~70 (from R+O+C)
+- **With Industrial**: Revenue can reach ~150, but Industrial is rarely kept
+
+**The ceiling**: Even with perfect planning (7 connected R = 350 pop potential), the max revenue from R alone is 35/tick. Adding C (20/tick) and I (35/tick) can push revenue to 70-125/tick.
+
+### Model Performance Bounds
+
+| Model | Best Pop | Best Rev | Best Composite | Worst Pop |
+|-------|----------|----------|----------------|-----------|
+| 8B | 341 | 150 | 38.71 | 0 |
+| 3B | 231 | 60 | 33.90 | 0 |
+
+**Performance bounds:**
+- 8B peak: ~340 population, ~150 revenue, composite ~38-39
+- 3B ceiling: ~230 population, ~60 revenue, composite ~33-34
+- Both models have the same floor: 0 population, 25.0 composite
+
+**Interpretation**: LLMs can achieve high scores in some seeds but cannot reliably exceed these bounds. The ceiling is determined by:
+1. Grid size (100 tiles)
+2. Zone costs (R=100, O=100, C=150, I=200)
+3. Revenue per tick (R=10, C=20, I=35)
+4. Upkeep costs
+
+The 8B model achieves ~50% more population than 3B when successful, demonstrating better long-horizon planning within the constraints.
+
 ---
+
 
 

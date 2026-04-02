@@ -88,6 +88,11 @@ Ran CityBench benchmark with llama3:8b and llama3.2:3b across 5 seeds (42-46) an
 - `pytest tests` passes (87 passed)
 - `ruff check .` passes
 
+### Smoke test (2026-04-01)
+- `python3 run.py --seed 42 --turns 5` completes successfully (pop=0.00, composite=25.00 as expected for 5 turns)
+- Experiment result aggregation working correctly
+- All recent commits pushed to origin/main
+
 ### MODEL_EVALUATION_CONCLUSIONS.md
 New comprehensive evaluation report documenting the first comparative experiment:
 - **llama3:8b outperforms llama3.2:3b** by ~5-6 points on average

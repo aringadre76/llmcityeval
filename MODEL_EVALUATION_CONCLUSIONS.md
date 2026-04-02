@@ -167,6 +167,31 @@ The models procrastinate Industrial construction until the very end (turns 45-50
 
 The 3B model's disaster std dev of 0.0 is not a strength—it indicates all runs hit the same floor.
 
+### Predictive Factors for Success
+
+**High-performance runs share these traits:**
+- 8B model: Built Industrial between turns 3-49, achieved 165-342 population
+- No clear correlation between disaster count and final score
+- Resilience scores are consistently ~100 for most runs (scorer metric doesn't capture disaster impact)
+
+**Low-performance runs share these traits:**
+- No Industrial built (16 of 18 3B runs, 5 of 11 8B runs)
+- Population stuck at 0 throughout the game
+- Zero revenue generated in the final city
+
+---
+
+##Novel Insights: Seed 46 Exception
+
+**Seed 46 is anomalous** - Both models produce nearly identical best results:
+- llama3:8b: 33.98 (seed 46, pop 342)
+- llama3.2:3b: 33.88 (seed 46, pop 232)
+
+This suggests seed 46 has characteristics that are particularly favorable for this benchmark, possibly:
+- Lower disaster frequency or severity
+- More forgiving initial state
+- Easier resource distribution patterns
+
 ---
 
 ## Novel Insights: What Did We Learn That Wasn't Obvious?

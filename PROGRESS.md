@@ -598,3 +598,21 @@ The model's composite score is based on four components:
 
 ---
 
+### Budget Trajectory Analysis (2026-04-02)
+
+Average budget at key turns (successful runs only):
+| Turn | 8B | 3B |
+|------|----|----|
+| 5 | 1589 | 1574 |
+| 10 | 1351 | 1127 |
+| 20 | 800 | 525 |
+| 30 | 323 | 150 |
+| 40 | 247 | -13 |
+| 49 | 147 | -44 |
+
+Pattern: 3B model runs out of budget 10 turns earlier than 8B. This is likely due to:
+- Higher zone spending (more R tiles)
+- Less revenue generation
+- Earlier Industrial removal
+
+

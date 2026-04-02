@@ -94,17 +94,17 @@ Ran CityBench benchmark with llama3:8b and llama3.2:3b across 5 seeds (42-46) an
 - All recent commits pushed to origin/main
 
 ### MODEL_EVALUATION_CONCLUSIONS.md
-New comprehensive evaluation report documenting the first comparative experiment:
-- **llama3:8b outperforms llama3.2:3b** by ~5-6 points on average
-- **Disaster scenario reveals fragility**: 3B model hits floor score (25.0) in all runs with zero population
-- **8B model shows moderate seed sensitivity** but better disaster resilience (scores 25-32.7)
-- **Deep insight**: Industrial timing is the key differentiator - 8B builds at turns 3-49, 3B only at turns 8 and 42
-- **Key finding**: 3B model never builds Industrial in 16 of 18 runs, hits poverty trap (0 population, 0 revenue, negative budget)
-- **Architecture analysis**: Llama-3.2-3B uses knowledge distillation (not from-scratch training), which helps with answers but not reasoning chains - this explains why it never attempts Industrial ROI calculation
-- **Novel insight**: Industrial is necessary but not sufficient - the 3B model gets stuck in a poverty trap where no Industrial → no revenue → can't afford basic zones
-- **New constraint**: 16 of 18 3B runs ran into debt and hit 0 population with 0 revenue (no Industrial, no residential revenue)
-- **New insight**: Seed 46 produces nearly identical best scores for both models (33.98 vs 33.88), indicating favorable conditions
-- **New insight**: Disaster count doesn't clearly correlate with final score - resilience scores are consistently ~100 for most runs
+Comprehensive evaluation report documenting comparative benchmark of llama3:8b and llama3.2:3b across 22 runs (11 per model), 5 seeds, and 2 scenarios.
+
+**Key Findings:**
+1. **llama3:8b outperforms llama3.2:3b** by ~5-6 points on average
+2. **Disaster scenario reveals fragility**: 3B model hits floor score (25.0) in all runs with zero population
+3. **Industrial timing is critical**: 8B builds at turns 3-49, 3B only at turns 8 and 42 (2 builds in 18 runs)
+4. **Poverty trap**: 3B model never builds Industrial in 16 of 18 runs; gets stuck in 0 pop, 0 revenue, negative budget state
+5. **Architecture analysis**: 3B uses knowledge distillation (not from-scratch), learns *what* but not *why* (ROI calculus)
+6. **Seed 46 anomaly**: Both models achieve nearly identical best scores (33.98 vs 33.88), indicating favorable conditions
+7. **Disaster count doesn't correlate**: Resilience scores are consistently ~100 for most runs; variance in scores comes from other factors
+8. **Industrial is necessary but not sufficient**: Must build Industrial AND with enough budget (turns 20-35 optimal)
 - **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon planning and misunderstanding ROI timing
 - **Practical recommendation**: Train/prompt for Industrial ROI awareness (200 cost → 35/tick for 45+ turns = ~8x ROI)
 

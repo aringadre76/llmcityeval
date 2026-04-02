@@ -531,3 +531,19 @@ Success requires roads AND R tiles to be built together, not sequentially:
 - 3B: 8/18 successful (44%), avg pop 110.4
 - 8B builds roads earlier and integrates R tiles better
 - 3B builds more R tiles but with lower connectivity
+
+### High-Budget Failure Pattern (2026-04-02)
+
+**Pattern**: 8B seed42 runs have very high budgets (349-1895) but population = 0 due to disconnected R.
+
+| Model | Run | Budget | R Tiles | Conn R |
+|-------|-----|--------|---------|--------|
+| 8B | seed43 | 1850 | 1 | 0 |
+| 8B | seed42 | 1744 | 1 | 0 |
+| 8B | seed42 | 349 | 2 | 0 |
+| 8B | seed42 | 1895 | 1 | 0 |
+
+**Pattern**: Models build R tiles but never place them adjacent to roads, wasting budget. The city appears healthy (high budget) but has no connected zones to generate revenue.
+
+---
+

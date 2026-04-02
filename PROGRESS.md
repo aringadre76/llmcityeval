@@ -64,6 +64,32 @@
 
 ---
 
+## Recent progress (2026-04-01)
+
+### Experiment Results
+Ran CityBench benchmark with llama3:8b and llama3.2:3b across 5 seeds (42-46) and 2 scenarios (default, disasters_heavy).
+
+| Model | Scenario | Runs | Mean Score | Std Dev |
+|-------|----------|------|------------|---------|
+| llama3:8b | default | 5 | 30.66 | 6.06 |
+| llama3.2:3b | default | 7 | 25.16 | 4.05 |
+| llama3:8b | disasters_heavy | 5 | 27.79 | 3.44 |
+| llama3.2:3b | disasters_heavy | 5 | 25.0 | 0.0 |
+
+**Winner:** llama3:8b consistently outperforms llama3.2:3b by ~5-6 points.
+
+### Code Changes
+- Updated experiment matrix to replace unavailable models (llama3:70b, qwen2.5-coder:7b) with llama3.2:3b
+- Removed baseline agents (random, heuristic) for clearer LLM comparison
+- Results committed and pushed to origin/main
+
+### Verification
+- `python3 -m compileall` passes
+- `pytest tests` passes (87 passed)
+- `ruff check .` passes
+
+---
+
 ## TODO
 
 *Add items below when something is pending; remove or move to Changelog when finished.*

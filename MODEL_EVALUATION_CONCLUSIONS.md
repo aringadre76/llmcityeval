@@ -1267,6 +1267,21 @@ Analysis of 30 runs reveals an important exception to the "Roads first" principl
 
 **Implication**: Models may learn to use **spatial reasoning about tile adjacency** rather than strict ordering. The grid structure creates predictable adjacency patterns that can be exploited.
 
+### Zone Count Correlation Analysis (2026-04-02)
+
+Correlation between zone counts and population across all 30 runs:
+
+| Zone | Correlation | Interpretation |
+|------|-------------|----------------|
+| R (Residential) | 0.477 | Positive - more R tiles = higher potential population |
+| O (Roads) | **0.783** | **Strongest predictor** - roads enable R connectivity |
+| C (Commercial) | 0.055 | Negligible - drives population only via R |
+| I (Industrial) | -0.152 | Negative - models remove I to save upkeep |
+
+**Key insight**: **Roads (O) are the strongest predictor of population** (r=0.783), not residential zones. This is because roads enable R tiles to connect, which directly generates population.
+
+**Strategic implication**: Models should focus on road placement first, then ensure R tiles are adjacent to roads. Simply building more R tiles without road connectivity is ineffective.
+
 **Counter-example**: 8B seed42 failure (pop=0)
 - Roads built at (1,0), (1,4), (5,4) - none adjacent to R at (3,3)
 - No vertical/horizontal adjacency between R and O

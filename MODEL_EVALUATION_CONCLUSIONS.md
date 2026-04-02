@@ -679,3 +679,32 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | Short planning horizon | Models think 5-10 turns, not 50 | Myopic decision-making |
 
 ### The Industrial "Convert and Replace" Error
+
+Analysis of 3B seed46's successful run (pop=231, composite=33.88) reveals this critical pattern:
+1. **Turn 10**: Model builds Industrial at position (4,1)
+2. **Turns 10-24**: Model builds roads and Commercial at adjacent position (3,1), repeatedly
+3. **Turn 24**: Model converts Industrial tile (4,1) to ROAD (bypassing normal demolition cost)
+4. **Turn 25**: Model builds Residential on the former Industrial tile
+
+**Why this is wrong:** Each Industrial tile generates 35/tick revenue. If built at turn 10 and kept until turn 50:
+- Revenue generated: 45 × 35 = 1575
+- Total cost: 200 build + 45 upkeep = 245
+- **Net profit: 1330** (6.65x ROI over the game)
+
+The model sees:
+- Immediate cost: 200 (potential budget hit)
+- No immediate benefit (only 10 revenue-per-tile in early turns)
+- Optimal response: Replace with something cheaper
+
+**Deep insight:** The models are effectively myopic with a planning horizon of only 5-10 turns, not 50. They understand Industrial is "good" in theory but cannot model the 45-turn compounding benefit.
+
+### Action Effectiveness
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| Avg action success rate | 86.8% | 58.8% |
+| Computed across all 32 runs | | |
+
+The 8B model has a **28% higher action success rate** than the 3B model. Higher success rate == more budget efficiently used for city building.
+
+---

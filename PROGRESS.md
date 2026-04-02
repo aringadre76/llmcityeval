@@ -195,6 +195,15 @@ Analysis of 3B seed46's successful run reveals this critical pattern:
 
 The model sees immediate cost (200) and no immediate benefit, so it replaces the Industrial tile the same turn. This is the deepest misunderstanding - the models are effectively myopic with a planning horizon of only 5-10 turns, not 50.
 
+### Action Effectiveness
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| Avg action success rate | 86.8% | 58.8% |
+| Computed across all 32 runs | | |
+
+The 8B model has a **28% higher action success rate** than the 3B model. Higher success rate == more budget efficiently used for city building.
+
 ---
 
 ## TODO

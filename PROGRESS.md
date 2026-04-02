@@ -100,6 +100,8 @@ New comprehensive evaluation report documenting the first comparative experiment
 - **8B model shows moderate seed sensitivity** but better disaster resilience (scores 25-32.7)
 - **Deep insight**: Both models delay Industrial zones until turn 45-50, missing opportunity for 45+ turns of revenue gain
 - **Key finding**: 3B model never builds Industrial (avg 0.3/run vs 2.9 for 8B), explaining its poor performance
+- **Architecture analysis**: Llama-3.2-3B uses knowledge distillation (not from-scratch training), which helps with answers but not reasoning chains - this explains why it never attempts Industrial ROI calculation
+- **Novel insight**: The 3B model's failure isn't just size - it's training method; distillation learns *what* but not *why* (Sources: HuggingFace model cards for Llama-3.2-3B and Llama-3-8B)
 - **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon planning and misunderstanding ROI timing
 - **Practical recommendation**: Train/prompt for Industrial ROI awareness (200 cost → 35/tick for 45+ turns = ~8x ROI)
 

@@ -1249,6 +1249,29 @@ Revenue is determined by connected population × 10 + Commercial × 20 + Industr
 
 The 8B model achieves ~50% more population than 3B when successful, demonstrating better long-horizon planning within the constraints.
 
+### Road-Building Order Anomaly (Confirmed)
+
+Analysis of 30 runs reveals an important exception to the "Roads first" principle:
+
+**3B seed44 success (pop=75, rev=60):**
+- Turns 0-29: Built 10 R tiles scattered across the grid (no roads built!)
+- Turn 30: First road at (2,4) - connects to R at (2,3) vertically
+- Turn 45: Road at (3,2) - connects to R at (3,3) vertically
+- Turn 49: 2 connected R tiles achieved
+
+**Key insight**: The model placed R tiles at (2,3) and (3,3) where vertical adjacency to later road placement would create connections. This is a **navigator strategy** - placing R tiles where roads are likely to be built eventually.
+
+**Why this works**:
+1. R at (2,3) is below (2,4) - a road placed at (2,4) would connect it
+2. R at (3,3) is above (3,2) - a road placed at (3,2) would connect it
+
+**Implication**: Models may learn to use **spatial reasoning about tile adjacency** rather than strict ordering. The grid structure creates predictable adjacency patterns that can be exploited.
+
+**Counter-example**: 8B seed42 failure (pop=0)
+- Roads built at (1,0), (1,4), (5,4) - none adjacent to R at (3,3)
+- No vertical/horizontal adjacency between R and O
+- Strategy failed because adjacency was not planned
+
 ---
 
 

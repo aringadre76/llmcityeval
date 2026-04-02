@@ -677,8 +677,29 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | Zone quantity paradox | 3B builds 2.2x more zones but scores lower | Quality > quantity |
 | Industrial conversion error | 3B builds then immediately bulldozes I | Model doesn't grasp long-term ROI |
 | Short planning horizon | Models think 5-10 turns, not 50 | Myopic decision-making |
+| Zone placement pattern | 8B builds compact; 3B builds linear (column 3) | 8B more intentional planning |
 
-### The Industrial "Convert and Replace" Error
+### Zone Placement Patterns
+
+Successful runs show distinct spatial patterns:
+
+**8B seed46 (pop=341, composite=33.98):**
+- Focuses on central area: R at (2,1), (2,2), (4,2), (3,2), etc.
+- Creates compact, contiguous city blocks
+- Distribution: mean_x=3.3, std_x=1.3; mean_y=3.4, std_y=1.2
+
+**3B seed46 (pop=231, composite=33.88):**
+- Builds along column 3: O at (3,1), (3,2), (3,3), (3,4)
+- Linear growth pattern
+- Distribution: mean_x=3.1, std_x=1.1; mean_y=3.4, std_y=2.0 (more spread in Y)
+
+**3B seed45 (pop=118, composite=28.27):**
+- Also builds along column 3-4: O at (3,3), (3,4), (3,5), (3,6)
+- Similar linear pattern despite lower score
+
+**Key finding:** 8B creates more compact city patterns, suggesting better spatial planning. The 3B model's linear growth along a single column limits expansion options and connectivity.
+
+### Action Effectiveness
 
 Analysis of 3B seed46's successful run (pop=231, composite=33.88) reveals this critical pattern:
 1. **Turn 10**: Model builds Industrial at position (4,1)

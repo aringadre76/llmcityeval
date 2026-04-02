@@ -195,6 +195,22 @@ Analysis of 3B seed46's successful run reveals this critical pattern:
 
 The model sees immediate cost (200) and no immediate benefit, so it replaces the Industrial tile the same turn. This is the deepest misunderstanding - the models are effectively myopic with a planning horizon of only 5-10 turns, not 50.
 
+### Zone Placement Patterns
+
+Successful runs show distinct spatial patterns:
+
+**8B seed46 (pop=341, composite=33.98):**
+- Focuses on central area: R at (2,1), (2,2), (4,2), (3,2), etc.
+- Creates compact, contiguous city blocks
+- Distribution: mean_x=3.3, std_x=1.3; mean_y=3.4, std_y=1.2
+
+**3B seed46 (pop=231, composite=33.88):**
+- Builds along column 3: O at (3,1), (3,2), (3,3), (3,4), (3,5)
+- Linear growth pattern
+- Distribution: mean_x=3.1, std_x=1.1; mean_y=3.4, std_y=2.0
+
+**Key finding:** 8B creates more compact city patterns, suggesting better spatial planning. The 3B model's linear growth limits expansion options.
+
 ### Action Effectiveness
 
 | Metric | 8B | 3B |

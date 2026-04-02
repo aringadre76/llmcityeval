@@ -1115,5 +1115,21 @@ Based on the 30-run analysis, the optimal strategy for LLM planners in CityBench
 
 **Critical rule**: If budget < 100 OR population = 0, focus exclusively on roads. No other zone should be built.
 
+### Road-Free Failure Mode (Confirmed)
+
+Critical finding: **2 runs never built roads at all** - this is the ultimate planning failure.
+
+**3B seed42 (failed run):**
+- All 50 turns: 0 roads, 0 connected R
+- R tiles scattered but never connected
+- Final budget: -305, population: 0
+
+**What went wrong:** The model can't grasp the fundamental dependency: roads come first. ItBuilds R tiles as if they generate population on their own, not understanding the connectivity requirement.
+
+**Implication:** The prompt may need to emphasize **"Road first, R after"** more strongly. The models have a fundamental misunderstanding of the grid mechanics - they treat R tiles like independent sources of population rather than components of a connected network.
+
+**Severity**:Road-free failure is the most severe - no amount of R tiles can generate population without roads. Models must learn this dependency before they can succeed.
+
 ---
+
 

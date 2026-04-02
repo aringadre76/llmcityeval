@@ -103,6 +103,8 @@ New comprehensive evaluation report documenting the first comparative experiment
 - **Architecture analysis**: Llama-3.2-3B uses knowledge distillation (not from-scratch training), which helps with answers but not reasoning chains - this explains why it never attempts Industrial ROI calculation
 - **Novel insight**: Industrial is necessary but not sufficient - the 3B model gets stuck in a poverty trap where no Industrial → no revenue → can't afford basic zones
 - **New constraint**: 16 of 18 3B runs ran into debt and hit 0 population with 0 revenue (no Industrial, no residential revenue)
+- **New insight**: Seed 46 produces nearly identical best scores for both models (33.98 vs 33.88), indicating favorable conditions
+- **New insight**: Disaster count doesn't clearly correlate with final score - resilience scores are consistently ~100 for most runs
 - **Conclusion**: LLMs are reliable decision engines but not yet competitive with tailored heuristics; planning quality limited by weak long-horizon planning and misunderstanding ROI timing
 - **Practical recommendation**: Train/prompt for Industrial ROI awareness (200 cost → 35/tick for 45+ turns = ~8x ROI)
 

@@ -678,6 +678,7 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | Industrial conversion error | 3B builds then immediately bulldozes I | Model doesn't grasp long-term ROI |
 | Short planning horizon | Models think 5-10 turns, not 50 | Myopic decision-making |
 | Zone placement pattern | 8B builds compact; 3B builds linear (column 3) | 8B more intentional planning |
+| Zone efficiency | 8B seed43 achieves 38.71 without Industrial | R+O+C can generate 30-38 composite |
 
 ### Zone Placement Patterns
 
@@ -698,6 +699,28 @@ Successful runs show distinct spatial patterns:
 - Similar linear pattern despite lower score
 
 **Key finding:** 8B creates more compact city patterns, suggesting better spatial planning. The 3B model's linear growth along a single column limits expansion options and connectivity.
+
+### Zone Efficiency Insights
+
+The conversion from connected R tiles to population is remarkably consistent across runs:
+
+| Model | Seed | Connected R | Population | Efficiency |
+|-------|------|-------------|------------|------------|
+| 8B | 46 | 7 | 341 | 97% (341/350) |
+| 8B | 42 | 5 | 243 | 97% (243/250) |
+| 8B | 43 | 4 | 182 | 91% (182/200) |
+| 3B | 46 | 5 | 231 | 92% (231/250) |
+
+**Key findings:**
+- Connected R tiles convert to population at ~90% efficiency (50 pop/R × 90% = 45 effective pop)
+- The bottleneck isn't the R→pop conversion - it's achieving enough **connected** R tiles
+- 12 failed runs have 0 connected R despite building 7-12 R tiles total
+
+**Zone distribution analysis:**
+- 8B seed46 (pop=341, best): R=10, O=8, C=4, I=0
+- 8B seed43 (pop=243, 2nd best): R=10, O=4, C=2, I=0
+- 3B seed46 (pop=231): R=10, O=2, C=1, I=0
+- Successful runs achieve high scores WITHOUT Industrial, proving R+O+C can generate 30-38 composite
 
 ### Action Effectiveness
 

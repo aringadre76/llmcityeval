@@ -461,6 +461,34 @@ The llama3:8b seed 46 experiment shows dramatically different outcomes across ru
 - Runs that go negative stay negative 88% of the time
 - Recovery requires both positive budget AND connected R tiles to generate revenue
 
+### Road-R Integration Timing (2026-04-02)
+
+Success requires roads AND R tiles to be built together, not sequentially:
+
+**Successful Runs - Road First**:
+| Model | Run | Road Turn | First R Connected | Delay |
+|-------|-----|-----------|-------------------|-------|
+| 8B | seed42 | 2 | 4 | 2 |
+| 8B | seed46 | 3 | 8 | 5 |
+| 8B | seed43 | 4 | 11 | 7 |
+| 3B | seed46 | 6 | 12 | 6 |
+| 3B | seed43 | 15 | 17 | 2 |
+
+**Successful Runs - Simultaneous**:
+| Model | Run | Road Turn | First R Connected | Delay |
+|-------|-----|-----------|-------------------|-------|
+| 8B | seed45 | 6 | 6 | 0 |
+| 8B | seed44 (2nd run) | 10 | 10 | 0 |
+| 3B | seed46 | 8 | 8 | 0 |
+| 3B | seed45 | 9 | 9 | 0 |
+
+**Problem Case - 3B seed44**:
+- Road at turn 4, first R connected at turn 30 (26 turn delay!)
+- Built many R tiles but none adjacent to roads
+- Pop=79 despite late integration
+
+**Pattern**: Models的成功 runs build roads AND R tiles with minimal delay (0-7 turns). Large gaps indicate the model doesn't understand that R tiles need to be adjacent to roads.
+
 ### The Universal Connected R Rule (2026-04-02)
 
 **Critical finding**: **ALL failed runs have 0 connected R tiles**, regardless of how many R tiles were built.

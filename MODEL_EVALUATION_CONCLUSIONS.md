@@ -1502,6 +1502,27 @@ Models build Industrial but frequently bulldoze it within 2-24 turns:
 2. Keep it throughout the game
 3. Use the revenue buffer to weather budget downswing
 
+### Ultimate Failure Mode: Disconnected R (2026-04-02)
+
+**Critical finding**: **All failed runs have 0 connected R tiles**, regardless of budget or total zones built.
+
+**High-budget failures** (budget > 100, population = 0):
+| Model | Run | Budget | R Tiles | Connected R |
+|-------|-----|--------|---------|-------------|
+| 8B | seed43 | 1850 | 1 | 0 |
+| 8B | seed42 | 1744 | 1 | 0 |
+| 8B | seed42 | 349 | 2 | 0 |
+| 8B | seed42 | 1895 | 1 | 0 |
+
+**Pattern**: These runs have very high budgets (349-1895) but:
+- Build R tiles without adjacent roads
+- Never get any connected R tiles
+- Wasted budget because zones don't generate revenue
+
+**Root cause**: The model fundamentally misunderstands that **R tiles are worthless without road adjacency**. It builds R tiles but never checks if they're adjacent to roads.
+
+**Strategic imperative**: Models must ensure every R tile is adjacent to at least one non-disabled road. This is the single most important rule for success.
+
 ---
 
 

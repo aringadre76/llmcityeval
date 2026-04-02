@@ -1523,7 +1523,33 @@ Models build Industrial but frequently bulldoze it within 2-24 turns:
 
 **Strategic imperative**: Models must ensure every R tile is adjacent to at least one non-disabled road. This is the single most important rule for success.
 
+### Score Component Analysis (2026-04-02)
+
+The model's composite score is based on four components:
+- **Population** (weight: 25%): ~0-25 points (0-6.25 scaled)
+- **Efficiency** (weight: 25%): ~0-0.04 points (population/budget ratio very low)
+- **Stability** (weight: 25%): ~0-50 points (based on population variation)
+- **Resilience** (weight: 25%): ~95-100 points (high - models handle disasters well)
+
+**Key findings**:
+- **Stability** is the main differentiator between success and failure
+  - Successful runs: Avg stability 12.5-25
+  - Failed runs: Stability = 0 (no population = zero stability)
+- **Resilience** is consistently high (~95-100) for all runs
+  - Models handle disasters well - low population loss during events
+- **Efficiency** is very low (<0.02) for all runs
+  - Models spend ~2000 budget to get ~100-300 population
+  - The scaling formula is `efficiency = (final_pop / total_spent) * 100 / (50 * 10)`
+  - Best case efficiency: 0.04 (4%)
+
+**Interpretation**: The scoring system rewards:
+1. High population (scaled)
+2. Population stability (low variation)
+3. Disaster resilience (minimal population loss)
+4. Efficiency is a minor factor due to low scaling
+
 ---
+
 
 
 

@@ -242,6 +242,70 @@ The conversion from connected R tiles to population is remarkably consistent acr
 
 The 8B model has a **28% higher action success rate** than the 3B model. Higher success rate == more budget efficiently used for city building.
 
+### Correlation Analysis
+
+Correlation analysis of 30 runs reveals the critical metrics:
+
+| Metric | Correlation with Population | Interpretation |
+|--------|-----------------------------|----------------|
+| Connected R tiles | **0.995** | Nearly perfect correlation |
+| Roads (O) | 0.810 | Strong positive correlation |
+| Total R tiles | 0.311 | Weak correlation |
+
+**Interpretation**: Connected R tiles are the **sole predictor** of population. The connection is so strong (r=0.995) that population is essentially determined by how many R tiles are connected to roads.
+
+#### Success vs Failed Run Comparison
+
+| Metric | Successful Runs | Failed Runs | Delta |
+|--------|-----------------|-------------|-------|
+| Connected R | 3.4 | 0.0 | +3.4 |
+| Roads (O) | 4.1 | 0.4 | +3.7 |
+| Total R | 8.9 | 5.6 | +3.3 |
+| Commercial (C) | 2.8 | 2.9 | -0.1 |
+
+**Key insight**: Successful runs have:
+- **10x more connected R tiles** than failed runs
+- **10x more roads** than failed runs
+- Similar total R and C zones
+
+The difference between success and failure is **not zone quantity** - it's **zone connectivity**. Failed runs have many disconnected R tiles (worthless), while successful runs have well-connected R tiles (generating population).
+
+### Zone Efficiency by Model
+
+| Model | Successful Runs | Mean Pop | Mean Rev | Mean Connected R |
+|-------|-----------------|----------|----------|------------------|
+| 8B | 6 | 201 | 46.7 | 4.3 |
+| 3B | 8 | 109 | 37.5 | 2.6 |
+
+**8B advantage**: Higher population per successful run (201 vs 109). 8B achieves roughly **2x the population** of 3B when successful.
+
+**3B consistency**: More successful runs (8 vs 6), but each is lower quality. 3B is better at avoiding total failure but worse at generating high scores.
+
+### Seed 46 Anomaly
+
+Seed 46 shows significantly different behavior between models:
+
+| Model | Seed 46 Runs | Success Rate | Pop Range |
+|-------|--------------|--------------|-----------|
+| 8B | 2 | 50% | 0-341 |
+| 3B | 4 | 75% | 69-231 |
+
+**Key finding**: 3B achieves higher success rate on seed 46 (75% vs 50%), but lower peak (231 vs 341).
+
+### Failure Modes Identified
+
+**Road-Free Failure Mode**: 2 runs never built roads at all (3B seed42). R tiles scattered but never connected.
+
+**Road-Connected-But-Wrong-Location**: 3 runs built roads but R tiles were never adjacent (spatial reasoning failure).
+
+**Action Loop Problem**: Models get stuck building same tile repeatedly:
+- 8B seed42: R at (3,3) built 13 times
+- 3B seed42: R at (1,1) built repeatedly
+
+**Industrial ROI Misunderstanding**: Industrial tiles are often removed within 2-24 turns. Models don't understand the 45-turn compounding benefit.
+
+**8-Bit Planning Horizon**: First connected R always turn 7-9 in successful runs. Models operate with effective planning horizon of ~8 turns.
+
 ---
 
 ## TODO

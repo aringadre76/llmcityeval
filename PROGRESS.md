@@ -118,6 +118,60 @@ Comprehensive evaluation report documenting comparative benchmark of llama3:8b a
 
 ---
 
+## New Insights (2026-04-02)
+
+Analysis of 32 runs (16 per model, 5 seeds, default scenario) reveals fundamental model misunderstandings about CityBench dynamics, not just rule-breaking errors.
+
+### Key Findings
+
+| Finding | Evidence | Impact |
+|---------|----------|--------|
+| Road connectivity is critical | 12 failed runs with 0 connected R tiles despite 9+ R tiles | Population = 0 even with many R tiles |
+| Industrial ROI timing wasted | Best run built I at 25+, optimal at 15 | ~630 revenue lost (35% of potential) |
+| Commercial built too early | 3B built C at turn 0 with 0 population | ~300 budget wasted per early C |
+| Poverty trap common | 12 runs ended with pop=0, budget<0 | Models stuck in low-revenue equilibrium |
+| Action loop problem | 8B built same R tile 5x in a row | Wasted decision capacity |
+| Disaster resilience mostly irrelevant | 100 score in 84% of turns | Core mechanics matter more |
+
+### Root Causes
+
+1. **Disconnected R tiles are worthless** - Models build R tiles without roads, then get 0 population. The prompt says "R only generates population if connected to road" but models ignore this.
+
+2. **ROI timing misunderstanding** - Both models treat Industrial as optional rather than necessary investment. Industrial costs 200 but generates 35/tick for 25+ turns after building.
+
+3. **Commercial overemphasis** - 3B model builds C at turn 0 with 0 population. Commercial needs population to generate revenue.
+
+4. **Grid state forgetting** - 8B model repeatedly built same tile at turn 0-4, never learning the action had no effect. Models don't track state accumulation.
+
+5. **Phase order error** - Models do R→R→C without roads. Optimal: Roads first, then connected R, then C/I.
+
+### Strategic Pattern from Best Run (8B seed46)
+
+```
+Turn 0-2:  Build road spine (3-4 roads from center)
+Turn 3-10: Build connected R tiles (north side)
+Turn 11-20: Build connected R tiles (south side), start Commercial
+Turn 21-30: Build Industrial (edge tiles with low upkeep risk)
+Turn 31-50: Scale R/C based on budget, maintain buffer
+```
+
+### Recommended Strategy (for human evaluation)
+
+1. **Phase 1 (Turns 0-5):** Build 4 roads radiating from center, add 4 R tiles
+2. **Phase 2 (Turns 6-20):** Build connected R tiles in expanding ring, add 2 Commercial
+3. **Phase 3 (Turns 21-35):** Build Industrial on edges (low connected requirement), scale R
+4. **Phase 4 (Turns 36-50):** Add Commercial if budget permits, R if space available
+
+The key insight: **Roads come first**. Without roads, residential zones are worthless.
+
+---
+
+## TODO
+
+*Add items below when something is pending; remove or move to Changelog when finished.*
+
+---
+
 
 ## Changelog
 

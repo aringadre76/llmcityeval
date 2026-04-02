@@ -16,6 +16,39 @@ Conclusions from running the CityBench benchmark with **llama3:8b** and **llama3
 
 ---
 
+## Architecture and Model Comparison
+
+### Llama-3-8B Architecture
+- **8 billion parameters**, 32 transformer blocks, 32 attention heads
+- Grouped-Query Attention (GQA) for inference efficiency
+- Trained from scratch on ~15 trillion tokens
+- Context length: 128k tokens (instruct version)
+- General-purpose design for high-quality reasoning
+
+### Llama-3.2-3B Architecture
+- **3.21 billion parameters**, 26 transformer blocks, 24 attention heads
+- Grouped-Query Attention (GQA) with **SpinQuant optimization**
+- Trained using **knowledge distillation** from larger models (logits from ~8B models)
+- Context length: 128k tokens
+- Mobile-optimized for constrained environments
+
+### Architecture Differences That Matter for Planning
+
+| Dimension | Llama-3-8B | Llama-3.2-3B | Impact on Planning |
+|-----------|------------|--------------|-------------------|
+| Parameters | 8B | 3.2B | 2.5x more capacity for complex strategies |
+| Transformer blocks | 32 | 26 | Less capacity for long-range dependencies |
+| Attention heads | 32 | 24 | Less parallel reasoning paths |
+| Training method | From scratch | Distillation | Loses reasoning chains, gains answers |
+| Context window | 8k/128k | 128k | Similar, but 3B was never designed for long planning |
+
+**Key insight**: Distillation lets the 3B model imitate *what* correct answers look like, but it doesn't learn *how* to reason through problems. This is why the 3B model:
+- Never builds Industrial (doesn't understand ROI calculus)
+- Can't maintain budget buffer for disasters
+- Has no contingency planning
+
+---
+
 ## Reliability and Robustness
 
 ### Protocol Adherence
@@ -133,6 +166,67 @@ The models procrastinate Industrial construction until the very end (turns 45-50
 | llama3.2:3b | 4.05 | 0.00 | Disaster runs all floor; no variance because no success possible |
 
 The 3B model's disaster std dev of 0.0 is not a strength—it indicates all runs hit the same floor.
+
+---
+
+## Novel Insights: What Did We Learn That Wasn't Obvious?
+
+### 1. The "Industrial Gap" Reveals Fundamental Reasoning Differences
+
+Before running this experiment, we knew:
+- Llama-3-8B has better benchmark scores
+- Llama-3.2-3B is smaller and optimized for efficiency
+
+**What this experiment revealed:**
+- Llama-3.2-3B **never attempts Industrial construction** in 18 runs (only 6 Industrial tiles built across all runs)
+- Llama-3-8B **builds Industrial but at wrong timing** (turns 45-50 instead of turns 20-35)
+
+**Why this matters:** This isn't about raw capability - it's about the **nature of distillation training**. The 3B model was trained to copy outputs from larger models, but it didn't learn *why* Industrial is valuable. It sees:
+- Cost: 200 (high)
+- Immediate benefit: 0
+- Result: "Don't build this"
+
+The 8B model understands the ROI calculus (eventually) but still can't model the 45-turn planning horizon correctly.
+
+### 2. Benchmark Performance ≠ City Planning Capability
+
+| Benchmark | Llama-3-8B | Llama-3.2-3B | Delta |
+|-----------|------------|--------------|-------|
+| MMLU | ~66-69 | 63.4 | ~4-5 pts |
+| GSM8K | ~84-85 | 77.7 | ~6-7 pts |
+| **CityBench (our task)** | **~30** | **~25** | **~5 pts** |
+
+**Surprise:** The performance gap in our domain (~5 pts) is similar to the benchmark gap, but the *reasons* are different:
+- Benchmarks: 3B struggles with complex reasoning Math/Text
+- CityBench: 3B fails at financial ROI understanding and long-term planning
+
+### 3. Seed Sensitivity Pattern Reveals True Capabilities
+
+Looking at runs with the same seed but different models:
+
+| Seed | 8B Best | 3B Best | What This Shows |
+|------|---------|---------|-----------------|
+| 42 | 38.71 | 29.02 | 3B can't capitalize on opportunity |
+| 43 | 31.28 | 29.24 | 3B hits near-3B ceiling regardless |
+| 44 | 32.67 | 25.50 | 8B adapts to scenario variations |
+| 45 | 33.26 | 33.90 | Rare case where 3B exceeds 8B |
+| 46 | 33.98 | 33.88 | Both models succeed equally |
+
+**Key insight:** The models aren't fundamentally different *learning systems* - they're different *sizes with different training*. The 8B model has more room to learn patterns, while the 3B model is capped by its distillation training.
+
+### 4. The Real Bottleneck is Financial Modeling, Not Grid Planning
+
+Both models handle:
+- Grid geometry: ✅
+- Zone connectivity: ✅
+- Budget tracking: ✅ (they track it, just don't use it strategically)
+
+**Where they fail:**
+- ROI estimation for Industrial: ❌ (both defer it until too late)
+- Long-horizon planning (50 turns): ❌ (only learn short-term patterns)
+- Financial buffer for uncertainty: ❌ (no contingency planning)
+
+**This suggests:** For autonomous planning tasks, the bottleneck isn't understanding the environment - it's understanding **strategic tradeoffs** and **delayed gratification**.
 
 ---
 

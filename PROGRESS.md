@@ -547,3 +547,25 @@ Success requires roads AND R tiles to be built together, not sequentially:
 
 ---
 
+## Score Component Analysis (2026-04-02)
+
+The model's composite score is based on four components:
+
+| Component | Weight | Successful Runs | Failed Runs |
+|-----------|--------|-----------------|-------------|
+| Population | 25% | 2.76-5.15 | 0.00 |
+| Efficiency | 25% | 0.005-0.018 | 0.00 |
+| Stability | 25% | 19-25 | 0.00 |
+| Resilience | 25% | 95-100 | 95-100 |
+
+**Key findings**:
+- **Stability** is the main differentiator between success and failure
+- **Resilience** is consistently high (~95-100) - models handle disasters well
+- **Efficiency** is very low (<0.02) - models spend ~2000 budget to get ~100-300 pop
+
+**Formula**: `efficiency = (final_pop / total_spent) * 100 / (50 * 10)`
+- Best case efficiency: 0.04 (4%)
+- Actual efficiency: ~0.005-0.02
+
+---
+

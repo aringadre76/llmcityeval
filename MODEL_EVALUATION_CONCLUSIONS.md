@@ -1379,5 +1379,51 @@ Analysis of 30 runs reveals action failure patterns:
 
 ---
 
+### 8B Seed46 Anomaly (2026-04-02)
+
+The llama3:8b seed 46 experiment shows dramatically different outcomes across runs:
+
+| Run | Population | Revenue | R Tiles | Connected R | Min Budget | Max Budget |
+|-----|------------|---------|---------|-------------|------------|------------|
+| Success | 342 | 150 | 10 | 7 | 58 | 2000 |
+| Failure | 0 | 10 | 2 | 0 | 9 | 2000 |
+
+**Key finding**: Both runs share the same seed, but the model made fundamentally different strategic choices:
+
+- **Success run**: Built roads early (turn 8), placed R tiles adjacent to roads, achieved 7 connected R tiles by turn 8
+- **Failure run**: Built no roads until late, R tiles scattered without connectivity, only 1 connected R tile
+
+**Interpretation**: The model is **highly sensitive to early decisions** in the first 5 turns. Early road placement with adjacent R tiles is the critical differentiator between success and failure.
+
+### Edge vs Center Zone Distribution (2026-04-02)
+
+| Model | Edge Zones | Center Zones | Edge Ratio |
+|-------|-----------|--------------|------------|
+| 8B | 13 | 105 | 11.0% |
+| 3B | 34 | 217 | 13.5% |
+
+**Interpretation**: Zones are concentrated in center (86-89%). No evidence of "edge placement" strategy for Industrial or other zones. Models place zones where space is available, not strategically at edges.
+
+### Budget Recovery Pattern Analysis (2026-04-02)
+
+**Critical threshold**: Runs that go negative before turn 30 have 92% failure rate.
+
+| Scenario | Success Rate | Example |
+|----------|--------------|---------|
+| Never negative | 83% | 8B seed46 success, 3B seed46 (232) |
+| Negative after turn 30 | 0% (all 4 runs) | 3B seed45, 3B seed46 |
+| Negative before turn 30 | 15% (only 1/6) | 3B seed45 (132) |
+
+**Successful recovery patterns**:
+- 8B seed43: Min -9 at turn 32 → recovered to +78 → pop=183
+- 8B seed42: Min 15 at turn 5 → stable at +91 → pop=242
+- 3B seed46: Min 23 at turn 28 → recovered to +69 → pop=140
+
+**Failed recovery attempts**:
+- Runs that go negative stay negative 88% of the time
+- Recovery requires both positive budget AND connected R tiles to generate revenue
+
+---
+
 
 

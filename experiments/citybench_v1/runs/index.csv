@@ -22,3 +22,8 @@ citybench_v1_llama3.2_3b_seed44_disasters_heavy,llama3.2:3b,44,disasters_heavy,/
 citybench_v1_llama3.2_3b_seed45_default,llama3.2:3b,45,default,/home/robot/llmcityeval/results/llama3.2_3b_45_20260402T023414Z.json
 citybench_v1_llama3.2_3b_seed45_default,llama3.2:3b,45,default,/home/robot/llmcityeval/results/llama3.2_3b_45_20260402T023503Z.json
 citybench_v1_llama3.2_3b_seed45_disasters_heavy,llama3.2:3b,45,disasters_heavy,/home/robot/llmcityeval/results/llama3.2_3b_45_20260402T023538Z.json
+citybench_v1_llama3.2_3b_seed45_disasters_heavy,llama3.2:3b,45,disasters_heavy,/home/robot/llmcityeval/results/llama3.2_3b_45_20260402T023630Z.json
+citybench_v1_llama3.2_3b_seed46_default,llama3.2:3b,46,default,/home/robot/llmcityeval/results/llama3.2_3b_46_20260402T023707Z.json
+citybench_v1_llama3.2_3b_seed46_default,llama3.2:3b,46,default,/home/robot/llmcityeval/results/llama3.2_3b_46_20260402T023810Z.json
+citybench_v1_llama3.2_3b_seed46_disasters_heavy,llama3.2:3b,46,disasters_heavy,/home/robot/llmcityeval/results/llama3.2_3b_46_20260402T023845Z.json
+citybench_v1_llama3.2_3b_seed46_disasters_heavy,llama3.2:3b,46,disasters_heavy,/home/robot/llmcityeval/results/llama3.2_3b_46_20260402T023913Z.json

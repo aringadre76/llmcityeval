@@ -1146,11 +1146,56 @@ Critical finding: **2 runs never built roads at all** - this is the ultimate pla
 - R tiles scattered but never connected
 - Final budget: -305, population: 0
 
-**What went wrong:** The model can't grasp the fundamental dependency: roads come first. ItBuilds R tiles as if they generate population on their own, not understanding the connectivity requirement.
+**What went wrong:** The model can't grasp the fundamental dependency: roads come first. It builds R tiles as if they generate population on their own, not understanding the connectivity requirement.
 
 **Implication:** The prompt may need to emphasize **"Road first, R after"** more strongly. The models have a fundamental misunderstanding of the grid mechanics - they treat R tiles like independent sources of population rather than components of a connected network.
 
-**Severity**:Road-free failure is the most severe - no amount of R tiles can generate population without roads. Models must learn this dependency before they can succeed.
+**Severity**: Road-free failure is the most severe - no amount of R tiles can generate population without roads. Models must learn this dependency before they can succeed.
+
+### Road-Connected-But-Wrong-Location Failure Mode (Confirmed)
+
+Critical finding: **3 runs built roads but R tiles were never adjacent** - roads are present but not used correctly.
+
+**8B seed42 (failed run 1):**
+- Turn 0: O at (1,0) - Road first!
+- Turn 1: R at (3,3) - NOT adjacent to any O!
+- Turn 2: R at (3,3) - Action loop
+- ...
+- Final: O tiles at [(1,0), (1,4), (5,4)], R tile at (3,3) - but (3,3) is not adjacent!
+
+**The problem**: The model builds roads, but then places R tiles in non-adjacent locations. The roads are at (1,0), (1,4), (5,4) but R is at (3,3), which has neighbors (2,3), (4,3), (3,2), (3,4) - none of which contain roads.
+
+**Root cause**: The model misunderstands that **"R tiles must be adjacent to O tiles to generate population"**. It treats roads as step 1 and R as step 2, but shows no understanding of the spatial relationship required between them.
+
+**Severity**: High - roads are built but their purpose is defeated by placement errors. This is a **spatial reasoning failure**, not just a strategic one.
+
+### The 8-Bit Planning Horizon (Confirmed)
+
+Analysis of 30 runs reveals a consistent pattern:
+
+| Run Type | First Connected R | First Population |
+|----------|-------------------|------------------|
+| Successful | Turn 7-9 | Turn 8-12 |
+| Failed (no roads) | Never | Never |
+| Failed (roads but wrong placement) | Never | Never |
+
+**Key insight**: The models operate with an **effective planning horizon of ~8 turns**. They almost never achieve first connected R before turn 7 or first population before turn 8. This suggests:
+
+1. The models can't plan beyond ~8 turns ahead
+2. They prioritize immediate feedback (building zones that "do something now")
+3. They don't understand that early investment is needed for late-game payoff
+
+**Implication**: CityBench may be too long-horizon for current LLMs. The optimal intermediate solution might be:
+- Breaking the game into phases (0-10, 11-25, 26-50)
+- Explicitly rewarding phase transitions
+- Adding checkpoints that provide feedback on long-term planning progress
+
+**Conclusion**: LLMs understand zone types and rules, but fail at:
+1. Spatial reasoning (connecting R to O)
+2. Long-horizon planning (investment payoff)
+3. Feedback-driven learning (not updating based on state changes)
+
+These are fundamental limitations that require architectural changes (not just prompt tuning) to overcome.
 
 ---
 

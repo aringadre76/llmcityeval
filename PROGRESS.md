@@ -306,6 +306,36 @@ Seed 46 shows significantly different behavior between models:
 
 **8-Bit Planning Horizon**: First connected R always turn 7-9 in successful runs. Models operate with effective planning horizon of ~8 turns.
 
+### Population Thresholds (2026-04-02)
+
+Analysis of 30 runs reveals clear population thresholds based on connected R tiles:
+
+| Connected R | Avg Pop | Population Potential |
+|-------------|---------|---------------------|
+| 0 | 0 | No population possible |
+| 1 | 49 | ~33-65 population |
+| 2 | 78 | ~69-89 population |
+| 3 | 129 | ~118-141 population |
+| 4 | 176 | ~169-182 population |
+| 5 | 238 | ~231-243 population |
+| 7 | 341 | ~341 population (best observed) |
+
+**Key insight**: Population is approximately **50 × connected_R** with ~90-95% efficiency.
+
+### Performance Bounds (2026-04-02)
+
+| Model | Best Pop | Best Rev | Best Composite | Worst Pop |
+|-------|----------|----------|----------------|-----------|
+| 8B | 341 | 150 | 38.71 | 0 |
+| 3B | 231 | 60 | 33.90 | 0 |
+
+**Performance bounds:**
+- 8B peak: ~340 population, ~150 revenue (R+O+C), composite ~38-39
+- 3B ceiling: ~230 population, ~60 revenue, composite ~33-34  
+- Both models have same floor: 0 population, 25.0 composite
+- The ceiling is determined by: Grid size (100 tiles), Zone costs, Revenue per tick (R=10, C=20, I=35), Upkeep costs
+- 8B achieves ~50% more population than 3B when successful, demonstrating better long-horizon planning within constraints
+
 ---
 
 ## TODO

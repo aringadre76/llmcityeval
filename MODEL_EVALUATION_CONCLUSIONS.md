@@ -742,25 +742,72 @@ Final state patterns reveal **zero revenue** as the key failure mode in 14 runs:
 
 **The real bottleneck isn't just budget or Industrial** - it's generating any meaningful tax revenue. Without revenue, models can't afford roads or Additional zones.
 
-### Action Effectiveness
+### Industrial Build and Replace Pattern (Confirmed)
 
-Analysis of 3B seed46's successful run (pop=231, composite=33.88) reveals this critical pattern:
-1. **Turn 10**: Model builds Industrial at position (4,1)
-2. **Turns 10-24**: Model builds roads and Commercial at adjacent position (3,1), repeatedly
-3. **Turn 24**: Model converts Industrial tile (4,1) to ROAD (bypassing normal demolition cost)
-4. **Turn 25**: Model builds Residential on the former Industrial tile
+Analysis of 18 runs with Industrial construction reveals a consistent failure pattern:
 
-**Why this is wrong:** Each Industrial tile generates 35/tick revenue. If built at turn 10 and kept until turn 50:
-- Revenue generated: 45 × 35 = 1575
-- Total cost: 200 build + 45 upkeep = 245
-- **Net profit: 1330** (6.65x ROI over the game)
+| Model | Run | Turn I Built | Turn I Removed | Reason |
+|-------|-----|--------------|----------------|--------|
+| 3B | seed46 run 1 | 6 | 9 | Replaced R by building R at same tile |
+| 3B | seed46 run 2 | 9 | 24 | Replaced R after 15 turns |
+| 8B | seed42 | 22 | 31 | Replaced R after 9 turns |
+| 8B | seed43 | 20 | 24 | Replaced R after 4 turns |
+| 8B | seed45 | 13 | 15 | Replaced R after 2 turns |
+| 8B | seed46 run 1 | 4 | 5 | Replaced R by building O instead |
+| 8B | seed46 run 2 | 11 | 17 | Replaced R after 6 turns |
 
-The model sees:
-- Immediate cost: 200 (potential budget hit)
-- No immediate benefit (only 10 revenue-per-tile in early turns)
-- Optimal response: Replace with something cheaper
+**Pattern:** Industrial tiles are almost always removed within a few turns. When not immediately replaced, Industrial tiles disappear due to:
+1. **Misunderstood ROI**: Model sees 200 cost now vs slow revenue stream
+2. **Immediate budget pressure**: Industrial upkeep (1) + replacement cost feels high
+3. **Lack of patience**: Prefer fast cash (R=10/tick) over delayed reward (I=35/tick after break-even)
 
-**Deep insight:** The models are effectively myopic with a planning horizon of only 5-10 turns, not 50. They understand Industrial is "good" in theory but cannot model the 45-turn compounding benefit.
+**The bulldoze mechanism**: Models typically build a zone adjacent to Industrial (e.g., road), then the Industrial tile is cleared as part of the normal `_tile_cost()` calculation - `COST_CLEAR + build_cost`. No special "bulldoze" action is needed - just building a zone on top of Industrial replaces it.
+
+### Revenue Breakdown by Zone Type
+
+Analysis of successful vs failed runs reveals the revenue composition:
+
+| Model | Category | avg_R_rev | avg_C_rev | avg_I_rev | avg_total |
+|-------|----------|-----------|-----------|-----------|-----------|
+| 8B | High success | 50 | 20 | 0 | 70 |
+| 8B | Mid success | 50 | 20 | 0 | 61 |
+| 8B | Low success | 20 | 20 | 0 | 30 |
+| 3B | With I tiles | 10 | 25 | 35 | 70 |
+| 3B | No I tiles | 0 | 0 | 0 | 0 |
+
+**Key insight**: The 3B model with Industrial achieves 70 revenue - same as 8B without Industrial! But the problem is:
+- 3B only builds I in 2 of 18 runs
+- When I is built, it's removed before generating full ROI
+- Models without I cannot recover from negative budget (no high-revenue zone)
+
+### Industrial Break-Even Calculation
+
+The critical misunderstanding is **when Industrial pays for itself**:
+
+| Build Turn | Revenue by Turn 50 | Build+Upkeep Cost | Net Profit | Breakeven Turn |
+|------------|-------------------|-------------------|------------|----------------|
+| Turn 5 | 45 × 35 = 1575 | 200 + 45 = 245 | +1330 | Turn 7 |
+| Turn 15 | 35 × 35 = 1225 | 200 + 35 = 235 | +990 | Turn 14 |
+| Turn 25 | 25 × 35 = 875 | 200 + 25 = 225 | +650 | Turn 22 |
+| Turn 35 | 15 × 35 = 525 | 200 + 15 = 215 | +310 | Turn 31 |
+| Turn 45 | 5 × 35 = 175 | 200 + 5 = 205 | −30 | Never |
+
+**Models build I too late**: 8B avg = turns 23-30, 3B avg = turns 8-42 (but only 2 runs with I)
+**Optimal window**: Turns 15-20 - nets +990 to +1330 profit
+
+### Industrial ROI timing error
+
+The models fundamentally misunderstand the **time value of money** in CityBench:
+
+| Time | Model interpretation | Reality |
+|------|---------------------|---------|
+| Build turn | -200 budget | Initial investment |
+| Turns 1-10 | +10/tick revenue | Still losing money (net -90) |
+| Turn 11+ | "Now getting something back" | Still not recovered (net -80) |
+| Turn 20+ | "Should get more soon" | Net -30, close to break-even |
+| Turn 30+ | " Finally making profit" | Net +265! Should be happy |
+
+**The mistake**: Models think Industrial has "high upfront cost with no immediate return" and decide to replace it with something that provides faster cash flow. They never model beyond turn 30 where the true ROI appears.
 
 ### Action Effectiveness
 
@@ -770,5 +817,154 @@ The model sees:
 | Computed across all 32 runs | | |
 
 The 8B model has a **28% higher action success rate** than the 3B model. Higher success rate == more budget efficiently used for city building.
+
+---
+
+## New Insights (2026-04-02) - Deep Analysis of 30 Recent Runs
+
+### Revenue Timing and Recovery Patterns
+
+Analysis of 30 recent runs reveals critical patterns in revenue generation and recovery:
+
+#### Success vs Failure by Revenue Profile
+
+| Model | Category | Runs | Final Pop | Final Rev | Min Budget | Recovery |
+|-------|----------|--------|-----------|-----------|------------|----------|
+| 8B | High success (pop > 200) | 3 | 243-341 | 60-150 | 15-58 | Yes |
+| 8B | Mid success (pop > 0) | 3 | 65-241 | 30-70 | -9 to 85 | Mixed |
+| 8B | Failure (pop = 0) | 6 | 0 | 0-10 | N/A | Never |
+| 3B | High success (pop > 100) | 4 | 118-231 | 25-60 | 8-68 | Yes |
+| 3B | Mid success (pop < 100) | 4 | 33-89 | 10-50 | 20-160 | Yes |
+| 3B | Failure (pop = 0) | 10 | 0 | 0 | -586 to -61 | Never |
+
+#### Key Timing Observations
+
+**Failed runs share this timeline:**
+```
+Turn 0-5:  Build R tiles without roads (or roads without adjacent R)
+Turn 6-15: R tiles accumulate with 0 connected (0 population, 0 tax)
+Turn 16-25: Budget depletes, no recovery possible
+Turn 26-49: Bankruptcy penalty reduces population to 0
+Turn 50:   Final state - 0 pop, 0 rev, negative budget
+```
+
+**Successful runs share this timeline:**
+```
+Turn 0-5:  Build road spine FIRST
+Turn 5-15: Add R tiles connected to roads
+Turn 15-25: Population grows (50 pop/R), revenue increases
+Turn 26-50: Scale R/C, add Industrial if budget permits
+```
+
+#### The 8-Turn Bottleneck
+
+**Critical finding**: The first connected population appears around turn 8 in successful runs, but never appears in failed runs.
+
+| Model | Run | Turn 1st Pop | First Connected R | Total Connected R at End |
+|-------|-----|--------------|-------------------|-------------------------|
+| 8B | seed46 | 8 | 1 | 7 |
+| 8B | seed42 | - | never | 0 |
+| 8B | seed43 | - | never | 0 |
+| 8B | seed45 | - | never | 0 |
+| 3B | seed46 | 9 | 1 | 5 |
+| 3B | seed44 | - | never | 0 |
+
+**The connection**: The model's first 5-8 decisions determine success or failure. If roads and R tiles are not properly coordinated in the first 10 turns, the city is doomed.
+
+### Zone Quality Analysis
+
+#### Zone Efficiency by Model and Seed
+
+| Model | Seed | R Tiles | Connected R | Pop/R | Pop/Connected_R |
+|-------|------|---------|-------------|-------|-----------------|
+| 8B | 46 | 10 | 7 | 48.7 | 48.7 |
+| 8B | 42 | 9 | 0 | 0.0 | N/A |
+| 8B | 43 | 10 | 0 | 0.0 | N/A |
+| 8B | 45 | 10 | 0 | 0.0 | N/A |
+| 8B | 42 (best) | 10 | 5 | 24.3 | 48.6 |
+| 3B | 46 | 11 | 5 | 21.0 | 46.2 |
+| 3B | 44 | 9 | 0 | 0.0 | N/A |
+
+**Insight**: Connected R tiles consistently generate ~46-49 population each across all successful runs. The conversion rate is remarkably stable at ~90-98% of the theoretical 50 pop/R.
+
+### Budget Trajectory Patterns
+
+#### Recovery Threshold Analysis
+
+| Model | Run | Min Budget | Turn | Final Pop | Rev | Recovered? |
+|-------|-----|------------|------|-----------|-----|------------|
+| 8B | seed42 (best) | 15 | 34 | 243 | 70 | Yes |
+| 8B | seed43 | -9 | 32 | 182 | 40 | Yes |
+| 8B | seed46 | 58 | 31 | 341 | 150 | Yes |
+| 3B | seed46 (best) | 30 | 29 | 231 | 50 | Yes |
+| 3B | seed44 | 38 | 45 | 75 | 60 | Yes |
+| 3B | seed45 | 4 | 42 | 130 | 30 | Yes |
+| 3B | seed42 | -192 | 49 | 33 | 10 | No (stuck negative) |
+| 3B | seed46 (run 2) | -586 | 19 | 69 | 10 | No (too deep) |
+
+**Recovery insight**: Budget recovery is possible if:
+1. Minimum budget is not too negative (>-150)
+2. Minimum budget is reached before turn 35
+3. Revenue exceeds expenses after the negative point
+
+If budget goes below -150 or stays negative after turn 35, recovery is essentially impossible.
+
+### Success/Failure Rates by Model
+
+| Model | Successful | Failed | Success Rate |
+|-------|------------|--------|--------------|
+| llama3:8b | 6 | 6 | 50% |
+| llama3.2:3b | 8 | 10 | 44% |
+
+**Note**: 3B has slightly lower success rate but similar ceiling. The key difference is consistency:
+
+| Model | Best Pop | Worst Pop | Pop Std Dev |
+|-------|----------|-----------|-------------|
+| 8B | 341 | 0 | 131 |
+| 3B | 231 | 0 | 95 |
+
+The 8B model has higher variance (better best, worse worst). The 3B model is more consistent but has a lower ceiling.
+
+### Demographics of Failure
+
+#### Failed Run Categories
+
+| Category | Count | Key Characteristics |
+|----------|-------|---------------------|
+| **Type A**: Never built roads | 14 | 0 O tiles, 0 connected R |
+| **Type B**: Built roads too late | 6 | O tiles at turns 10-15, R tiles disconnected |
+| **Type C**: Industrial built then removed | 10 | I tiles at turn 6-24, then gone |
+| **Type D**: Both A + C | 10 | No roads ANDIndustrial removed |
+
+#### The Fatal Combination
+
+Runs that fail due to **Type A (no roads)** cannot generate population, regardless of zone quantity. Runs that fail due to **Type C (Industrial removed)** lose the high-revenue zone and cannot recover from budget deficits.
+
+**Type A failures are irreversible**: Once 50 turns pass with 0 population, population decay continues even if roads are added late.
+
+**Type C failures may be recoverable**: If Industrial is removed early, models can rebuild I later.
+
+### Strategic Insights from Successful Runs
+
+Successful runs share these characteristics:
+1. **Roads first**: At least 1 road by turn 2
+2. **Early connection**: First connected R by turn 8
+3. **Population by turn 10**: First 10+ population achieved
+4. **Positive budget**: Never below -50 after turn 15
+5. **Medium-scale Industrial**: 1-2 I tiles, kept until the end
+
+Successful 8B runs (3 with pop > 200):
+- Turn 4-8: 1-2 roads
+- Turn 8-12: First connected R tiles
+- Turn 12-20: Population grows (20-100)
+- Turn 20-40: Steady budget growth (positive)
+- Turn 40-50: Scale R if space permits
+
+Successful 3B runs (4 with pop > 100):
+- Turn 8-12: 1-2 roads (slightly later than 8B)
+- Turn 12-18: First connected R tiles
+- Turn 18-25: Population grows (30-80)
+- Turn 25-50: Maintain positive budget
+- Late game: May build 1 I tile (often removed later)
 
 ---

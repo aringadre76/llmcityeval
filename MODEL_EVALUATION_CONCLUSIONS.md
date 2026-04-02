@@ -675,3 +675,7 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | Budget recovery usually impossible | 3B hits -170 to -422 by turn 49 | Too late to recover after turn 35 |
 | Connected R strongly correlates with composite | r=0.830 vs revenue r=0.698 | Primary success driver |
 | Zone quantity paradox | 3B builds 2.2x more zones but scores lower | Quality > quantity |
+| Industrial conversion error | 3B builds then immediately bulldozes I | Model doesn't grasp long-term ROI |
+| Short planning horizon | Models think 5-10 turns, not 50 | Myopic decision-making |
+
+### The Industrial "Convert and Replace" Error

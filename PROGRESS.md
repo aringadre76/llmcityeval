@@ -133,6 +133,8 @@ Analysis of 32 runs (16 per model, 5 seeds, default scenario) reveals fundamenta
 | Action loop problem | 8B built same R tile 5x in a row | Wasted decision capacity |
 | Disaster resilience mostly irrelevant | 100 score in 84% of turns | Core mechanics matter more |
 | Zone quantity paradox | 3B builds 2.2x more zones but scores lower | Quality > quantity |
+| Industrial conversion error | 3B builds then immediately bulldozes I | Model doesn't grasp long-term ROI |
+| Short planning horizon | Models think 5-10 turns, not 50 | Myopic decision-making |
 
 ### Root Causes
 
@@ -177,6 +179,21 @@ Budget recovery is possible but dimensions matter. If negative budget occurs lat
 | 3B | seed43 | -422 | 29 | 0 | 25.00 | No |
 
 **Recommendation:** Maintain at least +30 budget buffer to allow recovery from bad turns.
+
+### The Industrial "Convert and Replace" Error
+
+Analysis of 3B seed46's successful run reveals this critical pattern:
+1. Turn 10: Model builds Industrial at (4,1) 
+2. Turns 10-24: Model builds roads and Commercial adjacent to the Industrial
+3. Turn 24: Model converts Industrial tile to ROAD
+4. Turn 25: Model builds Residential on the bulldozed Industrial tile
+
+**Why this is wrong:** Each Industrial tile generates 35/tick revenue for 45+ turns.
+- Turn 10 build → 45 × 35 = 1575 revenue by turn 50
+- 200 build cost + 45 upkeep = 245 total
+- Net profit: 1330
+
+The model sees immediate cost (200) and no immediate benefit, so it replaces the Industrial tile the same turn. This is the deepest misunderstanding - the models are effectively myopic with a planning horizon of only 5-10 turns, not 50.
 
 ---
 

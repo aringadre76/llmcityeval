@@ -630,6 +630,21 @@ Analysis of runs with negative budget reveals important patterns:
 2. Models can't build enough Industrial fast enough to recover
 3. Population continues to decay from bankruptcy penalty
 
+| Model | 8B | 3B |
+|-------|----|----|
+| Total Zone Count | 116 | 251 |
+| Residential (R) | 60 (51.7%) | 155 (61.8%) |
+| Commercial (C) | 23 (19.8%) | 62 (24.7%) |
+| Industrial (I) | 0 (0.0%) | 2 (0.8%) |
+| Roads (O) | 33 (28.4%) | 32 (12.7%) |
+
+**Paradoxical finding:** The 3B model builds **2.2x more zone tiles** (251 vs 116) but achieves **lower scores** because:
+1. Most R tiles are disconnected (worthless)
+2. Almost no Industrial built (missing highest-value zones)
+3. Roads are sparse (no connectivity)
+
+**Insight:** Zone quality (type + connectivity) matters far more than zone quantity. A city with 30 well-placed zones can outperform a city with 100 poorly placed zones.
+
 ### Conclusion from Additional Analysis
 
 The models fail not because they can't read rules, but because they fundamentally misunderstand the game dynamics:
@@ -659,3 +674,4 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | Grid state forgetting | Models don't track previous actions | Repeated ineffective actions |
 | Budget recovery usually impossible | 3B hits -170 to -422 by turn 49 | Too late to recover after turn 35 |
 | Connected R strongly correlates with composite | r=0.830 vs revenue r=0.698 | Primary success driver |
+| Zone quantity paradox | 3B builds 2.2x more zones but scores lower | Quality > quantity |

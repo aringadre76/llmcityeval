@@ -132,6 +132,7 @@ Analysis of 32 runs (16 per model, 5 seeds, default scenario) reveals fundamenta
 | Poverty trap common | 12 runs ended with pop=0, budget<0 | Models stuck in low-revenue equilibrium |
 | Action loop problem | 8B built same R tile 5x in a row | Wasted decision capacity |
 | Disaster resilience mostly irrelevant | 100 score in 84% of turns | Core mechanics matter more |
+| Zone quantity paradox | 3B builds 2.2x more zones but scores lower | Quality > quantity |
 
 ### Root Causes
 

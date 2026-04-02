@@ -569,3 +569,32 @@ The model's composite score is based on four components:
 
 ---
 
+## Action Analysis (2026-04-02)
+
+**Action Success Rates**:
+| Model | Total Actions | Applied | Rejected | Success Rate |
+|-------|--------------|---------|----------|--------------|
+| 8B | 711 | 596 (83.8%) | 115 (16.2%) | 83.8% |
+| 3B | 1131 | 659 (58.3%) | 472 (41.7%) | 58.3% |
+
+**Rejection Types**:
+| Model | insufficient_budget | invalid_action_type |
+|-------|---------------------|---------------------|
+| 8B | 115 | 0 |
+| 3B | 327 | 145 |
+
+**Zone Distribution**:
+| Model | R | C | O | I |
+|-------|---|---|---|---|
+| 8B | 59.8% | 20.3% | 15.9% | 4.1% |
+| 3B | 64.1% | 19.4% | 15.9% | 0.6% |
+
+**Insights**:
+- 8B has higher action success rate (83.8% vs 58.3%)
+- 3B proposes more actions but has lower success rate
+- 3B focuses more on R (64.1% vs 59.8%) and rarely builds I (0.6% vs 4.1%)
+- 8B builds more Industrial, reflecting better understanding of ROI
+- 3B's lower success is due to both budget errors (insufficient_budget) and invalid actions (invalid_action_type)
+
+---
+

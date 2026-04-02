@@ -1548,7 +1548,36 @@ The model's composite score is based on four components:
 3. Disaster resilience (minimal population loss)
 4. Efficiency is a minor factor due to low scaling
 
+### Action Effectiveness Analysis (2026-04-02)
+
+| Model | Total Actions | Applied | Rejected | Success Rate |
+|-------|--------------|---------|----------|--------------|
+| 8B | 711 | 596 (83.8%) | 115 (16.2%) | 83.8% |
+| 3B | 1131 | 659 (58.3%) | 472 (41.7%) | 58.3% |
+
+**Rejection Types**:
+| Model | insufficient_budget | invalid_action_type |
+|-------|---------------------|---------------------|
+| 8B | 115 | 0 |
+| 3B | 327 | 145 |
+
+**Zone Distribution**:
+| Model | R | C | O | I |
+|-------|---|---|---|---|
+| 8B | 59.8% | 20.3% | 15.9% | 4.1% |
+| 3B | 64.1% | 19.4% | 15.9% | 0.6% |
+
+**Insights**:
+- 8B has **28% higher action success rate** than 3B
+- 8B builds more Industrial (4.1% vs 0.6%), reflecting better ROI understanding
+- 3B's lower success is due to both budget errors (insufficient_budget) and invalid actions (invalid_action_type)
+- 3B proposes more R tiles (64.1% vs 59.8%) but with lower conversion efficiency
+- 8B's superior action success means less budget wasted on rejected actions
+
+**Statistical interpretation**: The 8B model is not only smarter about zone selection but also more consistent in executing valid actions.
+
 ---
+
 
 
 

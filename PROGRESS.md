@@ -164,6 +164,19 @@ Turn 31-50: Scale R/C based on budget, maintain buffer
 
 The key insight: **Roads come first**. Without roads, residential zones are worthless.
 
+### Budget Recovery Analysis
+
+Budget recovery is possible but dimensions matter. If negative budget occurs late (turn 35+), recovery is effectively impossible.
+
+| Model | Run | Min Budget | Turn | Final Pop | Composite | Recovery |
+|-------|-----|------------|------|-----------|-----------|----------|
+| 8B | seed43 | -9 | 32 | 182 | 31.28 | Yes - recovered to +74 |
+| 8B | seed42 | +15 | 0 | 243 | 38.71 | No issue |
+| 3B | seed42 | -305 | 22 | 0 | 25.00 | No |
+| 3B | seed43 | -422 | 29 | 0 | 25.00 | No |
+
+**Recommendation:** Maintain at least +30 budget buffer to allow recovery from bad turns.
+
 ---
 
 ## TODO

@@ -607,6 +607,29 @@ Disaster resilience matters significantly only when disasters occur (16% of runs
 
 **Impact:** Wasted decision capacity. Each "useless" action is a turn that could have been used to build a road or expand the city.
 
+### Budget Recovery is Possible but Timing Matters
+
+Analysis of runs with negative budget reveals important patterns:
+
+| Model | Run | Min Budget | Turn | Final Pop | Composite | Recovery |
+|-------|-----|------------|------|-----------|-----------|----------|
+| 8B | seed43 | -9 | 32 | 182 | 31.28 | Yes - recovered to +74 by turn 41 |
+| 8B | seed44 | 85 | 0 | 65 | 22.36 | No issue |
+| 8B | seed45 | -245 | 23 | 0 | 25.00 | No - stayed negative |
+| 3B | seed43 | -422 | 29 | 0 | 25.00 | No |
+| 3B | seed42 | -305 | 22 | 0 | 25.00 | No |
+
+**Key observations:**
+- 8B model can recover from early negative budget (turn 32) and still achieve 31.28 composite
+- 8B seed45 hit -245 at turn 23 but failed to recover - population decayed to 0
+- 3B models hit very negative budgets (often -170 to -422) and never recover
+- Recovery requires ~10+ turns of positive budget growth to break even
+
+**Insight:** Budget recovery requires time. If negative budget hits after turn ~35, recovery is effectively impossible because:
+1. Each turn only generates ~35 budget if Industrial is built
+2. Models can't build enough Industrial fast enough to recover
+3. Population continues to decay from bankruptcy penalty
+
 ### Conclusion from Additional Analysis
 
 The models fail not because they can't read rules, but because they fundamentally misunderstand the game dynamics:
@@ -634,3 +657,5 @@ These are not minor misunderstandings - they're fundamental gaps in the models' 
 | ROI misunderstanding | Models wait until turn 35+ for I | Should build by turn 20-25 |
 | Action loop problem | 8B built same R tile 5x in a row | Wasted decision capacity |
 | Grid state forgetting | Models don't track previous actions | Repeated ineffective actions |
+| Budget recovery usually impossible | 3B hits -170 to -422 by turn 49 | Too late to recover after turn 35 |
+| Connected R strongly correlates with composite | r=0.830 vs revenue r=0.698 | Primary success driver |

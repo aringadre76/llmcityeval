@@ -1058,6 +1058,28 @@ The difference between success and failure is **not zone quantity** - it's **zon
 
 **3B consistency**: More successful runs (8 vs 6), but each is lower quality. 3B is better at avoiding total failure but worse at generating high scores.
 
+### Seed 46: The Anomaly
+
+Seed 46 shows significantly different behavior between models:
+
+| Model | Seed 46 Runs | Success Rate | Pop Range |
+|-------|--------------|--------------|-----------|
+| 8B | 2 | 50% | 0-341 |
+| 3B | 4 | 75% | 69-231 |
+
+**Key finding**: 3B achieves higher success rate on seed 46 (75% vs 50%), but lower peak (231 vs 341).
+
+**Patterns observed in seed 46:**
+- Both models exhibit the "Action Loop Problem" in some runs
+- 3B's loops are different (building same R tile at (1,1) repeatedly)
+- 8B's loops involveRoad building on same tile
+- Seed 46 may have favorable initial conditions that allow partial recovery from loops
+
+**Implication**: The benchmark gets easier with certain seeds. This suggests:
+1. Seed selection significantly impacts results
+2. Models have seed-specific failure modes
+3. Averaging across multiple seeds is crucial for fair evaluation
+
 ### The Action Loop Problem (Confirmed)
 
 Deep analysis of seed 42 runs reveals the **Action Loop Problem** - models get stuck in repetitive behavior:

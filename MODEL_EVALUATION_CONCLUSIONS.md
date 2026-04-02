@@ -1019,4 +1019,43 @@ Successful 3B runs (4 with pop > 100):
 
 Models that try Industrial cannot afford the upfront cost without sacrificing other zones, and often replace it too early.
 
+### Key Correlations: The Success Triad
+
+Correlation analysis of 30 runs reveals the critical metrics:
+
+| Metric | Correlation with Population | Interpretation |
+|--------|-----------------------------|----------------|
+| Connected R tiles | **0.995** | Nearly perfect correlation |
+| Roads (O) | 0.810 | Strong positive correlation |
+| Total R tiles | 0.311 | Weak correlation |
+
+**Interpretation**: Connected R tiles are the **sole predictor** of population. The connection is so strong (r=0.995) that population is essentially determined by how many R tiles are connected to roads.
+
+#### Success vs Failed Run Comparison
+
+| Metric | Successful Runs | Failed Runs | Delta |
+|--------|-----------------|-------------|-------|
+| Connected R | 3.4 | 0.0 | +3.4 |
+| Roads (O) | 4.1 | 0.4 | +3.7 |
+| Total R | 8.9 | 5.6 | +3.3 |
+| Commercial (C) | 2.8 | 2.9 | -0.1 |
+
+**Key insight**: Successful runs have:
+- **10x more connected R tiles** than failed runs
+- **10x more roads** than failed runs
+- Similar total R and C zones
+
+The difference between success and failure is **not zone quantity** - it's **zone connectivity**. Failed runs have many disconnected R tiles (worthless), while successful runs have well-connected R tiles (generating population).
+
+### Zone Efficiency by Model
+
+| Model | Successful Runs | Mean Pop | Mean Rev | Mean Connected R |
+|-------|-----------------|----------|----------|------------------|
+| 8B | 6 | 201 | 46.7 | 4.3 |
+| 3B | 8 | 109 | 37.5 | 2.6 |
+
+**8B advantage**: Higher population per successful run (201 vs 109). 8B achieves roughly **2x the population** of 3B when successful.
+
+**3B consistency**: More successful runs (8 vs 6), but each is lower quality. 3B is better at avoiding total failure but worse at generating high scores.
+
 ---

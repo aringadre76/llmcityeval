@@ -487,6 +487,21 @@ Success requires roads AND R tiles to be built together, not sequentially:
 - Built many R tiles but none adjacent to roads
 - Pop=79 despite late integration
 
+### Budget at Turn 20 Does Not Predict Success (2026-04-02)
+
+**Analysis**: Budget at turn 20 ranges from -20 to 1880 across both successful and failed runs.
+
+| Run | Budget Turn 20 | Final Pop | Success |
+|-----|----------------|-----------|---------|
+| Successful | 13-1880 | 33-342 | Yes |
+| Failed | 13-1880 | 0 | No |
+
+**Key finding**: **Budget level at turn 20 has no predictive power for success**. The same budget values (e.g., 674, 866, 183) appear in both successful and failed runs.
+
+**Actual predictor**: Zone connectivity, not budget. A run with low budget but well-connected R tiles will succeed. A run with high budget but disconnected R tiles will fail.
+
+**Budget is a symptom, not a cause**: Models that build disconnected zones waste budget without generating revenue. Models that build connected zones generate revenue even with lower budget.
+
 **Pattern**: Models的成功 runs build roads AND R tiles with minimal delay (0-7 turns). Large gaps indicate the model doesn't understand that R tiles need to be adjacent to roads.
 
 ### The Universal Connected R Rule (2026-04-02)

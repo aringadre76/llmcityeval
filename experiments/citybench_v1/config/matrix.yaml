@@ -10,18 +10,9 @@ models:
   - id: llama3:8b
     label: LLaMA 3 8B
     agent_type: ollama
-  - id: llama3:70b
-    label: LLaMA 3 70B
+  - id: llama3.2:3b
+    label: LLaMA 3.2 3B
     agent_type: ollama
-  - id: qwen2.5-coder:7b
-    label: Qwen2.5 Coder 7B
-    agent_type: ollama
-  - id: random_baseline
-    label: Random Baseline
-    agent_type: random
-  - id: heuristic_baseline
-    label: Heuristic Baseline
-    agent_type: heuristic
 
 seeds: [42, 43, 44, 45, 46]
 
@@ -35,4 +26,3 @@ scenarios:
     config_overrides:
       disaster_frequency_multiplier: 2.0
       disaster_severity_multiplier: 1.5
-

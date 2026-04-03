@@ -982,4 +982,52 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 ---
 
+## Zone Building Timing Analysis (2026-04-02)
+
+**Critical Finding**: The ORDER of zone building determines success. Successful models build roads first.
+
+### Turn-by-Turn Zone Distribution
+
+| Turn | 8B | 3B |
+|------|----|----|
+| 0 | E=1200 | E=1800 |
+| 1 | R=10, O=2 | R=19 |
+| 2 | R=12, O=5 | R=27 |
+| 3 | R=14, O=7 | R=35 |
+| 4 | R=16, O=6, I=1 | R=43, O=1 |
+| 5 | R=14, O=8 | R=49, O=1 |
+| 6 | R=17, O=10 | R=57, O=3 |
+| 7 | R=19, O=12 | R=64, O=3 |
+| 8 | R=19, O=14 | R=68, O=6 |
+| 9 | R=20, O=15 | R=76, O=7 |
+
+### Key Differences
+
+**8B (successful)**:
+- Turn 1: Already has roads (O=2)
+- Turn 4: Builds R AND roads together (R=16, O=6)
+- Never more than 2 R tiles without roads
+- Balanced growth: R and O build simultaneously
+
+**3B (less successful)**:
+- Turn 1-3: 19-35 R tiles with ZERO roads
+- Turn 4: First road (O=1) after many R tiles
+- R:C ratio: 2.2:1 (overemphasizing R)
+- Builds R tiles first, attempts roads later
+
+### The Root Cause
+
+**3B model builds a RAILWAY without places for trains**: R tiles are built first, then roads are added later. By this point, R tiles are scattered in locations where road adjacency won't be possible.
+
+**8B model builds a ROADSPINE first**: Roads are built in a central spine, then R tiles are placed adjacent to roads. Every R tile can connect to the road network.
+
+### Strategic Implication
+
+The first 5 turns are critical:
+- **Must build roads by turn 1-2** to establish a spine
+- **Must build R tiles adjacent to existing roads**
+- **Building R before roads guarantees failure**
+
+---
+
 ## Score Component Analysis (2026-04-02)

@@ -1886,6 +1886,53 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 ## Anomaly Analysis (2026-04-02)
 
+
+---
+
+## Revenue Differentiation Analysis (2026-04-02)
+
+**Critical Finding**: Revenue is the primary differentiator between success and failure. The correlation between population and revenue is **0.84**.
+
+### Final State Comparison
+
+| Model | Status | Runs | Avg Pop | Avg Rev | Avg Exp | Net |
+|-------|--------|------|---------|---------|---------|-----|
+| 8B | Success | 6 | 206 | 71.7 | 29.2 | +42.5 |
+| 8B | Fail | 6 | 0 | 1.7 | 7.5 | -5.8 |
+| 3B | Success | 8 | 110 | 34.4 | 28.2 | +6.2 |
+| 3B | Fail | 10 | 0 | 0.0 | 12.1 | -12.1 |
+
+### Key Patterns
+
+1. **Successful runs have positive cash flow**:
+   - 8B Success: +42.5 net/tick
+   - 3B Success: +6.2 net/tick
+
+2. **Failed runs have near-zero revenue**:
+   - 8B Fail: 1.7 revenue (single disconnected R tile)
+   - 3B Fail: 0.0 revenue (no connected zones)
+
+3. **Revenue gap between success and failure**:
+   - 8B: 71.7 - 1.7 = 70.0 (42x higher)
+   - 3B: 34.4 - 0.0 = 34.4 (34x higher for 3B, 8B)
+
+### Root Cause Analysis
+
+The **revenue gap** is caused by:
+- Failed runs: 0 connected R tiles → 0 revenue from R zones
+- Failed runs: 0 connected C tiles → 0 revenue from C zones
+- Failed runs: 0 Industrial tiles built → 0 35/tick revenue
+
+**The disconnect is binary**: Either zones are connected to roads (generating revenue) or they are not (generating 0 revenue). There is no middle ground.
+
+### Strategic Implication
+
+The goal should be **zero-disconnect design**:
+1. Build roads first in a connected spine
+2. Build R tiles immediately adjacent to roads
+3. Verify each R tile has road adjacency before adding more
+4. Only build C/I when R connectivity is established
+
 ## Anomaly Analysis (2026-04-02)
 
 ### High-Budget Failures
@@ -1918,5 +1965,4 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 **Key insight**: 8B seed46 success achieves **2.1x higher efficiency** (0.21 vs 0.10) by connecting R tiles to roads early, generating revenue, and compounding growth.
 
----
 ---

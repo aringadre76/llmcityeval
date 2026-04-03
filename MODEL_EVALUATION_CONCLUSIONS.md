@@ -1576,7 +1576,40 @@ The model's composite score is based on four components:
 
 **Statistical interpretation**: The 8B model is not only smarter about zone selection but also more consistent in executing valid actions.
 
+### Disaster Event Analysis (2026-04-02)
+
+| Model | Recession Events | Demand Surge Events | Total Events |
+|-------|------------------|---------------------|--------------|
+| 8B | 42 | 36 | 118 |
+| 3B | 71 | 60 | 195 |
+
+**Insights**:
+- 3B runs experience **65% more total events** than 8B runs
+- 3B has **69% more recessions** (71 vs 42)
+- 3B has **67% more demand surges** (60 vs 36)
+- Events by success status:
+  - Success: 51 recessions, 35 demand surges
+  - Fail: 62 recessions, 61 demand surges
+
+**Interpretation**: The 3B model runs are more volatile, experiencing more disaster events that disrupt progress. While simulations run with hardcoded disaster probabilities, the higher event count in 3B runs may be due to seed selection or timing differences.
+
+### Expense vs Revenue Analysis (2026-04-02)
+
+| Model | Avg Expenses | Avg Revenue | Net |
+|-------|--------------|-------------|-----|
+| 8B | 18.3 | 36.7 | +18.3 |
+| 3B | 19.3 | 15.3 | -4.0 |
+
+**Insights**:
+- 8B generates **2.4x more revenue** than 3B (36.7 vs 15.3)
+- 8B has **positive net cash flow** (+18.3)
+- 3B has **negative net cash flow** (-4.0)
+- This negative cash flow explains why 3B runs run out of budget earlier
+
+**Root cause**: 3B builds more R tiles (which generate only 10 revenue each) but generates less revenue overall. Industrial tiles are crucial for revenue scaling.
+
 ---
+
 
 
 

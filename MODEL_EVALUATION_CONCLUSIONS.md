@@ -1608,7 +1608,37 @@ The model's composite score is based on four components:
 
 **Root cause**: 3B builds more R tiles (which generate only 10 revenue each) but generates less revenue overall. Industrial tiles are crucial for revenue scaling.
 
+### City Size and Growth Analysis (2026-04-02)
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| Avg city size | 9.8 tiles | 13.9 tiles |
+| Avg growth rate | 4.90 pop/turn | 2.44 pop/turn |
+| First pop turn | avg 10.3 | avg 15.2 |
+| Budget at first pop | avg 1495 | avg 901 |
+
+**Key findings**:
+- 3B builds **42% more infrastructure** (13.9 vs 9.8 tiles)
+- 3B achieves first population **later** (turn 15 vs 10)
+- 3B achieves first population with **lower budget** (901 vs 1495)
+- Despite more infrastructure, 3B has lower population growth rate (2.44 vs 4.90)
+
+**Paradox**: 3B builds more but gets less population. This confirms that **quantity of zones doesn't matter - only quality (connectedness) matters**.
+
+### First Population Timing by Model (2026-04-02)
+
+**8B first population turns**: [4, 6, 8, 10, 11, 23]
+**3B first population turns**: [8, 8, 9, 12, 14, 17, 17, 18, 19, 30]
+
+**Pattern**: 
+- 8B achieves first population earlier (avg turn 10.3)
+- Best 8B: turn 4 (pop=6 → 342, growth=8.12 pop/turn)
+- 3B's earliest successful runs start around turn 8
+
+**Strategic implication**: Early population (turn 5-10) enables revenue compounding over time. Models that delay first population miss out on compound growth.
+
 ---
+
 
 
 

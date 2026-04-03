@@ -1417,4 +1417,55 @@ The goal is to have **positive cash flow by turn 10** to enable budget recovery 
 
 ---
 
+## Budget at First Population Analysis (2026-04-02)
+
+**Critical Finding**: Successful models build up substantial budget before first population.
+
+### Budget at First Population
+
+| Model | Avg Budget | Range |
+|-------|------------|-------|
+| 8B | 1495 | [1096, 1833] |
+| 3B | 901 | [72, 1848] |
+
+**Patterns**:
+- 8B: Builds ~1495 budget before first pop (about 30% remaining)
+- 3B: Builds ~901 budget before first pop (about 45% remaining, more conservative)
+
+### Budget After First Population
+
+| Model | Status | Avg | Range |
+|-------|--------|-----|-------|
+| 8B | Success | 369 | [-9, 1608] |
+| 3B | Success | 302 | [4, 1248] |
+| 3B | Fail | 460 | [-262, 1760] |
+
+### Negative Budget Periods
+
+| Model | Status | RunsWithNegative / Total |
+|-------|--------|--------------------------|
+| 8B | Success | 1/5 |
+| 8B | Fail | 1/6 |
+| 3B | Success | 0/4 |
+| 3B | Fail | 10/10 |
+
+**Key Insights**:
+1. **3B failed runs ALL have negative budget periods** - 7-29 turns of negative budget
+2. **3B successful runs have never gone negative** - 30-1248 budget range
+3. **8B can recover from brief negative periods** - 1 run with -9 for 3 turns
+
+### Root Cause: Spending vs Revenue Timing
+
+- **3B failures**: Overspend on disconnected R, then can't cover upkeep expenses
+- **3B success**: Conservative spending, stays above zero budget
+- **8B**: More aggressive build-up of infrastructure before Recension
+
+### Strategic Recommendation
+
+**Target**: Start with ~70-80% of starting budget after first population
+- This ensures budget buffer for late-game growth
+- Avoids negative budget trap (especially for 3B)
+
+---
+
 ## Score Component Analysis (2026-04-02)

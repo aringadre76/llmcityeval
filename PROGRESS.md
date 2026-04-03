@@ -1320,4 +1320,49 @@ Successful models achieve early balance:
 
 ---
 
+## Zone Distribution Patterns (2026-04-02)
+
+**Critical Finding**: Successful runs have consistent zone patterns; Failed runs show high variance or zero roads.
+
+### Final Zone Distribution by Success Status
+
+| Zone | 8B Success | 8B Fail | 3B Success | 3B Fail |
+|------|------------|---------|------------|---------|
+| R tiles | 9.0 | 1.5 | 10.2 | 8.0 |
+| O tiles (roads) | 5.0 | 1.2 | 3.8 | **0.0** |
+| C tiles | 3.2 | 1.3 | 2.8 | 4.0 |
+| I tiles | 0.0 | 0.0 | 0.0 | 0.1 |
+
+### Key Patterns
+
+1. **3B Failed runs have ZERO roads** (O=0.0) - This is the fatal flaw
+
+2. **8B Successful runs**: R/O ratio 1.2-3.3
+   - R=10, O=4 (ratio 2.5)
+   - R=10, O=3 (ratio 3.3)
+   - R=9, O=5 (ratio 1.8)
+
+3. **3B Successful runs**: R/O ratio 2.2-3.7
+   - R=12, O=4 (ratio 3.0)
+   - R=11, O=3 (ratio 3.7)
+   - R=7, O=3 (ratio 2.3)
+
+4. **8B Failed runs**: Only R=1.5, O=1.2 - barely started
+
+### Connection Between R and O
+
+Successful runs maintain **R/O ratio between 1.2 and 3.7**:
+- Too few roads (O too low): R tiles无法 connect → 0 revenue
+- Too many roads (O too high): Budget wasted on roads instead of R
+
+The **optimal R/O ratio is 1.5-3.0** - enough R to population but enough O to connect them.
+
+### Strategic Implication
+
+1. **3B must build roads** - Failed runs never build roads at all
+2. **Maintain R/O ratio** - Target 1.5-3.0 for balanced build
+3. **8B advantage** - Better at building roads proportionally (O=5.0 vs 3.8)
+
+---
+
 ## Score Component Analysis (2026-04-02)

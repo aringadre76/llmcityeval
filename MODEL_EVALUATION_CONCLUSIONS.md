@@ -1698,3 +1698,35 @@ Turn 26-50: Scale based on budget, protect connected zones
 
 ---
 
+### Revenue Recovery Analysis (2026-04-02)
+
+**Critical Finding**: Successful runs generate revenue early and recover from negative budget. Failed runs never generate meaningful revenue.
+
+| Turn | Successful (avg) | Failed (avg) | Delta |
+|------|------------------|--------------|-------|
+| 5 | rev=2.8, exp=5.0 | rev=0.0, exp=4.1 | -2.8 net vs -4.1 net |
+| 10 | rev=15.6, exp=11.4 | rev=0.7, exp=6.2 | **+4.2 net vs -5.5 net** |
+| 20 | rev=28.6, exp=17.8 | rev=2.9, exp=9.6 | **+10.8 net vs -6.8 net** |
+| 30 | rev=50.0, exp=25.4 | rev=2.9, exp=11.0 | **+24.6 net vs -8.1 net** |
+| 40 | rev=56.1, exp=29.0 | rev=1.4, exp=11.6 | **+27.1 net vs -10.1 net** |
+| 49 | rev=60.6, exp=29.9 | rev=0.7, exp=11.6 | **+30.7 net vs -10.9 net** |
+
+**Key Findings**:
+
+1. **Revenue generation is the differentiator**: Successful runs achieve positive cash flow by turn 10. Failed runs remain in negative cash flow throughout.
+
+2. **Root cause of zero revenue**: No connected residential/commercial/industrial tiles → 0 revenue. Failed runs build R tiles but never get them connected to roads.
+
+3. **Budget recovery pattern**:
+   - Successful: Go negative early (turns 1-8), then recover and end with +107 budget
+   - Failed: Never generate enough revenue, stay perpetually negative
+
+4. **The compounding effect**: Revenue repaid by turn 10 allows successful models to:
+   - Build more infrastructure
+   - Scale population
+   - End with positive budget despite early setbacks
+
+**Strategic implication**: The ability to generate positive cash flow by turn 10 is the strongest predictor of success. This requires both roads AND connected R tiles.
+
+---
+

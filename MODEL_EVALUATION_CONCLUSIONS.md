@@ -1803,6 +1803,51 @@ Early action patterns reveal a fundamental difference:
 - **Successful models (8B)**: Build roads first, place zones in center, balance R/C/O/I
 - **Less successful models (3B)**: Build R tiles without roads, place zones at edges, overinvest in R
 
+
 The **road-first strategy** visible in early turns is a strong predictor of success. Models that delay road building beyond turn 5 consistently fail.
 
+---
+
+## Population Growth Dynamics (2026-04-02)
+
+**Critical Finding**: Successful runs achieve earlier first population AND faster growth rates.
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| First pop turns | [4, 6, 8, 10, 11, 23] | [8, 8, 9, 12, 14, 17, 17, 18, 19, 30] |
+| Avg first pop turn | 10.3 | 16.8 |
+| Avg growth rate | 4.93 pop/turn | 2.43 pop/turn |
+
+### Key Insights
+
+1. **First pop timing**: 8B achieves first population ~7 turns earlier on average (10.3 vs 16.8)
+2. **Growth rate**: 8B grows **2x faster** (4.93 vs 2.43 pop/turn)
+3. **Compound advantage**: Earlier first pop + faster growth = much larger final population
+
+### Growth Pattern Comparison
+
+**8B successful runs**:
+- Best: pop=342 at turn 50, growth=8.12 pop/turn
+- Typical: pop=242 at turn 50, growth=5-6 pop/turn
+- Pattern: Exponential growth once R tiles connect to roads
+
+**3B successful runs**:
+- Best: pop=232 at turn 50, growth=3.8 pop/turn  
+- Typical: pop=90-140 at turn 50, growth=2-3 pop/turn
+- Pattern: Linear growth, limited by sparse R connections
+
+### Root Cause: Connection Quality
+
+| Metric | 8B (Success) | 3B (Success) |
+|--------|--------------|--------------|
+| Connected R at pop 1 | 1.8 | 1.2 |
+| Connected R at final | 4.0 | 2.6 |
+| Revenue multiplier | 3x | 2x |
+
+8B achieves better-connected R tiles earlier, resulting in higher revenue per tick. This enables:
+1. Earlier buy-in for more infrastructure
+2. Faster population compounding
+3. Higher final population
+
+---
 ---

@@ -1629,6 +1629,60 @@ Target **first connected R by turn 5-10** to maximize:
 - Total revenue captured over 50 turns
 - Resilience to late-game disasters
 
+
+---
+
+## Final State Distribution Analysis (2026-04-02)
+
+**Critical Finding**: Successful runs have moderate final budget, failed runs have extreme values.
+
+### Final State by Success Status
+
+| Model | Status | Runs | Avg Budget | Budget Range | Avg Revenue | Net |
+|-------|--------|------|------------|--------------|-------------|-----|
+| 8B | Success | 6 | 161.8 | [78, 288] | 80.0 | +47.8 |
+| 8B | Fail | 6 | 939.8 | [-256, 1895] | 1.7 | -24.2 |
+| 3B | Success | 8 | 53.5 | [20, 87] | 38.8 | +10.8 |
+| 3B | Fail | 10 | -218.0 | [-437, -71] | 0.0 | -12.1 |
+
+### Key Patterns
+
+1. **Successful runs have moderate final budget**:
+   - 8B Success: 161.8 budget (moderate, positive)
+   - 3B Success: 53.5 budget (low but positive)
+
+2. **Failed runs have extreme budget values**:
+   - 8B Fail: Budget 939.8 (high, disconnected zones) or -256 (negative)
+   - 3B Fail: Budget -218.0 (negative, overspending)
+
+3. **Final budget as a diagnostic**:
+   - Budget 0-300: Likely success (positive net)
+   - Budget >500: Likely failure (disconnected zones)
+   - Budget <0: Likely failure (overspending)
+
+4. **Population distribution**:
+   - All runs: 0-342, avg=70.6
+   - 8B: 0-342, avg=102.9
+   - 3B: 0-232, avg=49.1
+
+### Root Cause: Budget as Symptom
+
+High final budget (>500) indicates:
+- Building R tiles without roads
+- No revenue generation
+- Budget accumulating from revenue - (0 - low expenses)
+
+Negative final budget indicates:
+- Building too many zones
+- Revenue insufficient to cover expenses
+- Falling into poverty trap
+
+### Strategic Recommendation
+
+Monitor final budget as a success indicator:
+- **Goal**: Final budget between 50-300
+- **Warning**: Final budget >500 (disconnect) or <0 (overspending)
+
 ## Score Component Analysis (2026-04-02)
 
 The model's composite score is based on four components:

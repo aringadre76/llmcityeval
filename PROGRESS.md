@@ -582,6 +582,41 @@ The model's composite score is based on four components:
 - Livability decreases when population is unstable
 
 ---
+
+## Action Failure Analysis (2026-04-02)
+
+| Turn Range | 8B Total Failures | 3B Total Failures |
+|------------|-------------------|-------------------|
+| 0-10 | 0 | 35 |
+| 11-20 | 0 | 79 |
+| 21-30 | 51 | 132 |
+| 31-40 | 102 | 280 |
+| 41-50 | 123 | 253 |
+
+**Pattern**:
+- 8B failures cluster in late game (turns 22-50)
+- 3B failures begin at turn 0 and continue through all turns
+- 3B peak at turn 44 (24 failures) - models struggling late in game
+- 8B has "valley of failure" around turn 32-33
+
+**Interpretation**: 3B model struggles from the start and gets worse over time.
+8B starts strong but struggles when budget gets low (turns 32-35).
+
+---
+
+## Action Failure by Reason (2026-04-02)
+
+| Model | insufficient_budget | invalid_action_type |
+|-------|---------------------|---------------------|
+| 8B | 115 | 0 |
+| 3B | 327 | 145 |
+
+**8B**: 100% budget-related failures - trying to build too much
+**3B**: 327 budget failures + 145 invalid actions (model errors)
+
+**Root cause for 3B**: Not just budget - also misinterpreting action format or
+zone placement rules, leading to invalid_action_type rejections.
+
 ---
 
 ## Action Analysis (2026-04-02)

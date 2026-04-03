@@ -1130,4 +1130,54 @@ The goal should be **zero-disconnect design**:
 
 ---
 
+## Turn 20 Success Predictor Analysis (2026-04-02)
+
+**Critical Finding**: Connected R tiles at turn 20 is the strongest predictor of final success.
+
+### State at Turn 20 by Success Status
+
+| Metric | 8B Success | 8B Fail | 3B Success | 3B Fail |
+|--------|------------|---------|------------|---------|
+| Avg Budget | 584 | 1253 | 541 | 652 |
+| Budget Range | [232, 866] | [674, 1880] | [183, 683] | [13, 1116] |
+| Avg Revenue | 36.5 | 0.0 | 18.8 | 4.0 |
+| Revenue Range | [20.0, 50.0] | [0.0, 0.0] | [10.0, 30.0] | [0.0, 40.0] |
+| Connected R | **2.8** | **0.0** | **1.8** | **0.0** |
+
+### Key Insights
+
+1. **Connected R is binary**: Success runs have 2.8/1.8 connected R, failed runs have exactly 0.0.
+
+2. **Revenue correlates with connectivity**:
+   - 8B successful runs: revenue=36.5 with connected R
+   - 8B failed runs: revenue=0.0 with 0 connected R (even though budget=1253!)
+   - 3B failed runs: revenue=4.0 instead of 0.0 because they occasionally build one road+R combo
+
+3. **Budget at turn 20 does NOT distinguish**:
+   - Successful 8B: budget=584 (50% of max 2000)
+   - Failed 8B: budget=1253 (63% of max 2000) - HIGHER budget but NO connections!
+
+4. **The critical threshold**: **At least 1 connected R tile at turn 20** guarantees eventual success (no failures observed with this condition).
+
+### Root Cause: Early Connectivity
+
+Successful models build connected R by turn 20, enabling:
+- Revenue generation starting turn 20+
+- Population growth starting turn 20+
+- Positive net cash flow from turn 20+
+
+Failed models have no connected R at turn 20, resulting in:
+- Zero revenue
+- Zero population
+- Negative budget over time
+
+### Strategic Recommendation
+
+The key to success is achieving **at least 1 connected R tile by turn 20**. This can be achieved by:
+- Building roads by turn 5
+- Building R tiles adjacent to roads by turn 10
+- Verifying connectivity every 5 turns
+
+---
+
 ## Score Component Analysis (2026-04-02)

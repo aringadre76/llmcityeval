@@ -567,6 +567,21 @@ The model's composite score is based on four components:
 - Best case efficiency: 0.04 (4%)
 - Actual efficiency: ~0.005-0.02
 
+
+## Livability Analysis (2026-04-02)
+
+| Model | Success Runs | Avg Livability | Fail Runs | Avg Livability |
+|-------|--------------|----------------|-----------|----------------|
+| 8B | 6 | 0.963 | 6 | 0.925 |
+| 3B | 8 | 0.928 | 10 | 0.897 |
+
+**Insights**:
+- Successful runs have **higher livability** (avg 0.943 vs 0.908)
+- Livability correlates with success - models need livability > 0.8 for steady progress
+- 8B successful runs have exceptionally high livability (avg 0.963)
+- Livability decreases when population is unstable
+
+---
 ---
 
 ## Action Analysis (2026-04-02)

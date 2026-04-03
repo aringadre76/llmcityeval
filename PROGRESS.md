@@ -1287,4 +1287,37 @@ Monitor final budget as a success indicator:
 
 ---
 
+## Early Action Distribution Analysis (2026-04-02)
+
+**Critical Finding**: Successful models balance zone and road building early.
+
+### Action Distribution in First 10 Turns (Successful Runs)
+
+| Action Type | 8B | 3B |
+|-------------|----|----|
+| zone_R | 47.3% | 51.0% |
+| zone_O (road) | 25.5% | 19.5% |
+| zone_C | 20.2% | 14.5% |
+| zone_I | 7.0% | 1.0% |
+| road_O | 0% | 14.0% |
+
+### Key Insights
+
+1. **8B prioritizes roads early**: 25.5% of early actions are roads vs 19.5% for 3B
+2. **3B overbuilds R tiles**: 51% of early actions are R vs 47.3% for 8B
+3. **8B builds more Industrial**: 7% vs 1% in early turns (better ROI awareness)
+4. **3B uses explicit road actions**: 14% explicit road placement vs 0% for 8B
+
+### Strategic Implication
+
+Successful models achieve early balance:
+- Build roads (~20-25% of early actions)
+- Build R tiles (~45-50% of early actions)
+- Build C tiles (~15-20% of early actions)
+- Build I tiles (5-10% for ROI)
+
+3B's overemphasis on R (51%) without equal road building (19.5%) leads to disconnected zones.
+
+---
+
 ## Score Component Analysis (2026-04-02)

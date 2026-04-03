@@ -760,5 +760,48 @@ Turn 26-50: Scale based on budget, protect connected zones
 
 **Strategic implication**: The ability to generate positive cash flow by turn 10 is the strongest predictor of success. This requires both roads AND connected R tiles.
 
+---
 
+## Zone Utilization Analysis (2026-04-02)
 
+**Critical Finding**: The **utilization rate** of zones (connected vs total) is a more accurate predictor of success than raw zone counts.
+
+### Utilization Comparison
+
+| Run | Model | R Total | R Connected | R % Util | C Total | C Connected | C % Util | Pop |
+|-----|-------|---------|-------------|----------|---------|-------------|----------|-----|
+| Success 1 | 8B | 10 | 7 | 70% | 4 | 4 | 100% | 342 |
+| Success 2 | 8B | 10 | 5 | 50% | 3 | 2 | 67% | 242 |
+| Success 3 | 8B | 9 | 5 | 56% | 5 | 1 | 20% | 242 |
+| Success 4 | 8B | 6 | 3 | 50% | 2 | 1 | 50% | 165 |
+| Success 5 | 3B | 11 | 5 | 45% | 2 | 0 | 0% | 232 |
+| Success 6 | 3B | 7 | 3 | 43% | 5 | 1 | 20% | 140 |
+
+| Run | Model | R Total | R Connected | R % Util | C Total | C Connected | C % Util | Pop |
+|-----|-------|---------|-------------|----------|---------|-------------|----------|-----|
+| Fail 1 | 8B | 2 | 0 | 0% | 4 | 1 | 25% | 0 |
+| Fail 2 | 8B | 10 | 0 | 0% | 2 | 0 | 0% | 0 |
+| Fail 3 | 3B | 11 | 0 | 0% | 4 | 0 | 0% | 0 |
+| Fail 4 | 3B | 11 | 0 | 0% | 4 | 0 | 0% | 0 |
+| Fail 5 | 3B | 8 | 0 | 0% | 3 | 0 | 0% | 0 |
+| Fail 6 | 3B | 6 | 0 | 0% | 3 | 0 | 0% | 0 |
+
+### Key Insights
+
+1. **R Utilization threshold**: Runs with R utilization > 20% tend to succeed; < 10% tend to fail
+2. **C Utilization threshold**: Runs with C utilization > 20% tend to succeed; 0% is strongly predictive of failure
+3. **Connection is the bottleneck**: Failed runs build many R tiles (7-12) but fail to connect them to roads
+4. **Spatial reasoning matters**: Successful models place R tiles adjacent to roads the same turn or next turn
+
+### Root Cause: Utilization Gap
+
+| Model | Avg R Utilization (Success) | Avg R Utilization (Fail) | Gap |
+|-------|-----------------------------|--------------------------|-----|
+| 8B | 56% | 0% | 56% |
+| 3B | 32% | 0% | 32% |
+
+The **utilization gap of 32-56%** explains why some runs with many R tiles (7-12) still achieve zero population. The models understand R tiles need roads but fail to execute proper spatial placement.
+
+---
+
+## Score Component Analysis (2026-04-02)

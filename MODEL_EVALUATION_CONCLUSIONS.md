@@ -1852,6 +1852,40 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 ---
 
+---
+
+## Revenue per Connected Zone (2026-04-02)
+
+**Critical Finding**: Successful runs generate different revenue based on zone type distribution.
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| Revenue per connected zone | 12.6 | 11.7 |
+| Connected I in success runs | 18% of revenue | 12% of revenue |
+| Connected C in success runs | 35% of revenue | 25% of revenue |
+| Connected R in success runs | 47% of revenue | 63% of revenue |
+
+**Key insights**:
+1. **8B generates 7.7% more revenue** per connected zone than 3B
+2. **8B uses Industrial more effectively** (18% vs 12% of revenue from I)
+3. **3B relies more on R** (63% vs 47% of revenue from R)
+
+**Strategic implication**: Industrial zones provide the highest ROI (35/tick). 8B's better ROI awareness allows it to achieve higher revenue from fewer connected zones.
+
+### Optimal Zone Combination
+
+| Zone Type | Construction Cost | Upkeep/tick | Revenue/tick | Break-even | ROI (45 turns) |
+|-----------|-------------------|-------------|--------------|------------|----------------|
+| R | 100 | 2 | 10 | 12 turns | 3.75x |
+| C | 200 | 2 | 20 | 11 turns | 4.0x |
+| I | 200 | 4 | 35 | 8 turns | 7.75x |
+
+**Recommendation**: Build I first for longest-term ROI, then C, then R. However, R must be adjacent to roads, so roads must be built first.
+
+---
+
+## Anomaly Analysis (2026-04-02)
+
 ## Anomaly Analysis (2026-04-02)
 
 ### High-Budget Failures

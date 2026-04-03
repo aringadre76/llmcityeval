@@ -882,4 +882,38 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 ---
 
+## Anomaly Analysis (2026-04-02)
+
+### High-Budget Failures
+
+| Run | Model | Seed | Budget | Pop | Composite | Explanation |
+|-----|-------|------|--------|-----|-----------|-------------|
+| Fail 1 | 8B | 42 | 1896 | 0 | 25.0 | 7 disconnected R tiles, 0 roads |
+| Fail 2 | 8B | 42 | 1896 | 0 | 25.0 | 7 disconnected R tiles, 0 roads |
+| Fail 3 | 8B | 43 | 1851 | 0 | 25.0 | 1 disconnected R tile, 0 roads |
+
+**Interpretation**: High budget **does not cause success** - these runs accumulated massive budgets by building disconnected R tiles without roads. The 8B model at turn 42 has built many R tiles but never connected them to roads, accumulating 1896 budget with zero population.
+
+### Low-Budget Successes
+
+| Run | Model | Seed | Budget | Pop | Composite | Explanation |
+|-----|-------|------|--------|-----|-----------|-------------|
+| Success 1 | 3B | 45 | 18 | 132 | 30.0 | Efficient budget use |
+| Success 2 | 3B | 45 | 23 | 113 | 29.0 | Efficient budget use |
+| Success 3 | 3B | 46 | 62 | 140 | 30.0 | Efficient budget use |
+
+**Interpretation**: Low budget **does not cause failure** - 3B seed45 ends with only 18 budget but 132 population. These runs demonstrate efficient budget management with fewer but well-located zones.
+
+### Best-Case Efficiency:
+
+| Run | Budget Used | Pop | Pop/Budget |
+|-----|-------------|-----|------------|
+| 8B seed43 | 1799 | 182 | 0.10 pop/budget |
+| 3B seed45 | 1382 | 132 | 0.10 pop/budget |
+| 8B seed46 success | 1659 | 342 | 0.21 pop/budget |
+
+**Key insight**: 8B seed46 success achieves **2.1x higher efficiency** (0.21 vs 0.10) by connecting R tiles to roads early, generating revenue, and compounding growth.
+
+---
+
 ## Score Component Analysis (2026-04-02)

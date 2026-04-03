@@ -1365,4 +1365,56 @@ The **optimal R/O ratio is 1.5-3.0** - enough R to population but enough O to co
 
 ---
 
+## Budget Trajectory and Recovery Analysis (2026-04-02)
+
+**Critical Finding**: Successful runs maintain positive cash flow; Failed runs run out of budget.
+
+### Budget Trajectory
+
+| Turn | 8B Success | 8B Fail | 3B Success | 3B Fail |
+|------|------------|---------|------------|---------|
+| 0 | 2000 | 2000 | 2000 | 2000 |
+| 5 | 1528 | 1700 | 1549 | 1543 |
+| 10 | 1243 | 1582 | 1174 | 1251 |
+| 20 | 584 | 1253 | 541 | 652 |
+| 30 | 112 | 834 | 245 | 158 |
+| 40 | 115 | 638 | 78 | -64 |
+| 49 | 159 | 552 | 43 | -206 |
+
+### Key Patterns
+
+1. **Successful runs maintain positive budget**:
+   - 8B Success: Always positive (112-2000)
+   - 3B Success: Always positive (43-2000)
+
+2. **Failed runs go negative or stay high**:
+   - 8B Fail: Stays high (552-2000) - disconnected zones, no revenue
+   - 3B Fail: Goes negative (-206) - overspending on disconnected zones
+
+3. **Budget recovery is rare**:
+   - 8B Successful: 1/5 runs had negative budget but recovered
+   - 3B Successful: 0/4 runs had negative budget
+   - Failed runs never recovered once negative
+
+4. **The inflection point**:
+   - Successful runs: Budget stabilizes around 100-200 by turn 40
+   - Failed runs: Budget either stays high (>500) or goes negative
+
+### Root Cause: Revenue Deficit
+
+Failed runs have two failure modes:
+1. **8B Fail**: High budget (552+) because R tiles generate 0 revenue (no roads)
+2. **3B Fail**: Negative budget because overspending (low revenue from disconnected R)
+
+### Strategic Recommendation
+
+Successful models achieve **early positive cash flow** by:
+- Building roads before R tiles (turns 0-5)
+- Building R tiles adjacent to roads (turns 5-15)
+- Starting revenue generation by turn 10
+
+The goal is to have **positive cash flow by turn 10** to enable budget recovery and growth.
+
+---
+
 ## Score Component Analysis (2026-04-02)

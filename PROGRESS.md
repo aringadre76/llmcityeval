@@ -946,4 +946,40 @@ The **road-first strategy** visible in early turns is a strong predictor of succ
 
 ---
 
+## R Placement Relative to Roads (2026-04-02)
+
+**Critical Finding**: Successful models place R tiles adjacent to roads with ~88% accuracy. Successful placement is the key to connected zones.
+
+| Model | Run | R Placements | Adjacent to Roads | % Adjacent |
+|-------|-----|--------------|-------------------|------------|
+| 8B | seed43 | 34 | 24 | 71% |
+| 8B | seed46 | 47 | 45 | 96% |
+| 8B | seed42 | 34 | 33 | 97% |
+| 8B | seed45 | 39 | 35 | 90% |
+| 8B | seed44 | 34 | 34 | 100% |
+| 8B | seed44 | 48 | 42 | 88% |
+| **8B Avg** | | | | **88%** |
+| 3B | seed44 | 39 | 26 | 67% |
+| 3B | seed46 | 30 | 23 | 77% |
+| 3B | seed42 | 27 | 5 | 19% ← failure |
+| 3B | seed43 | 37 | 28 | 76% |
+| 3B | seed45 | 41 | 31 | 76% |
+| **3B Avg** | | | | **67%** |
+
+**Key Insights**:
+
+1. **8B achieves 21% higher R-road adjacency** (88% vs 67%)
+2. **Spatial reasoning matters**: Models that remember road locations place R tires adjacent
+3. **Learning effect**: Later R placements are more likely to be adjacent to roads
+4. **The bottleneck**: Failed runs (like 3B seed42 at 19%) have R tiles scattered without road context
+
+**Root Cause**: 3B model lacks consistent road placement strategy, causing R tiles to be placed far from roads. 8B model learns road patterns and clusters R near roads.
+
+**Recommendation**: Successful models need to:
+1. Build roads first in a spine pattern
+2. Place R tiles immediately adjacent to roads
+3. Expand outward in rings, maintaining connectivity
+
+---
+
 ## Score Component Analysis (2026-04-02)

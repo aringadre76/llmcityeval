@@ -1637,12 +1637,64 @@ The model's composite score is based on four components:
 
 **Strategic implication**: Early population (turn 5-10) enables revenue compounding over time. Models that delay first population miss out on compound growth.
 
+### Road-First Strategy Analysis (2026-04-02)
+
+**Critical Finding**: The fundamental failure mode is models misunderstanding that **Roads must be built BEFORE or SIMULTANEOUSLY with Residential tiles**.
+
+#### The Failure Pattern
+
+Failed runs show a consistent pattern:
+| Turn Range | Typical Action Pattern |
+|------------|------------------------|
+| 0-5 | Build R tiles scattered across the grid |
+| 6-15 | Build roads too late, R already in wrong locations |
+| 16-30 | Attempt to connect R zones but cannot salvag |
+| 31-50 | High budget waste on disconnected zones |
+
+#### Root Cause: Place R before Roads
+
+Models place R tiles during turns 0-5 without roads present, then later try to build roads to connect them. This fails because:
+1. R tiles must be **adjacent to active roads** to generate revenue
+2. By turn 10+ when roads are built, R tiles are scattered in wrong locations
+3. Road placement cannot salvag R tiles built with no road context
+
+#### Timing Analysis
+
+| Metric | Successful Runs | Failed Runs |
+|--------|-----------------|-------------|
+| First road | Turn 2-6 | Turn 25-45 (or never) |
+| First R connected | Turn 4-10 | Never (0 connected) |
+| R->Road delay | <7 turns | N/A |
+
+#### The Road-First Template
+
+**Best-performing runs follow this pattern**:
+```
+Turn 0-2:  Build 3-4 roads from center outward
+Turn 3-8:  Build R tiles adjacent to roads (north/south)
+Turn 9-15: Build C tiles near R zones, maintain road spine
+Turn 16-25: Build I on edges, add more R
+Turn 26-50: Scale based on budget, protect connected zones
+```
+
+#### Action Placement Pattern
+
+**Successful placement**: R tiles built **adjacent to roads** the same turn or next turn:
+- 8B seed46 success: O at (3,0), R at (3,1) in sequence
+- 3B seed46 success: O at (3,1-5), R at (2,1-5) forming column
+
+**Failed placement**: R tiles built in isolation:
+- 8B seed46 failure: R at (1,1), (2,2), (3,3) diagonal - no roads
+- 3B seed42: R at scattered positions, roads built too late
+
+#### Phase Integration Gap
+
+| Model | Avg Phase Gap | Interpretation |
+|-------|---------------|----------------|
+| 8B | 3-5 turns | Reasonable - builds R near roads |
+| 3B | 15-25 turns | Poor - builds R then much later tries roads |
+
+**The gap between R building and road building is the single most important factor** in predicting success. A gap of >10 turns correlates with 100% failure.
+
 ---
-
-
-
-
-
-
-
 

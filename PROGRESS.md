@@ -665,4 +665,67 @@ Pattern: 3B model runs out of budget 10 turns earlier than 8B. This is likely du
 - Less revenue generation
 - Earlier Industrial removal
 
+---
+
+## Road-First Strategy Analysis (2026-04-02)
+
+**Critical Finding**: Models fundamentally misunderstand that **Roads must come first** before any population can be generated.
+
+### The Failure Pattern
+
+**Turn-by-turn analysis of failed runs** shows:
+| Turn Range | 8B Action Pattern | 3B Action Pattern |
+|------------|-------------------|-------------------|
+| 0-5 | Builds disconnected R tiles | Builds disconnected R tiles |
+| 6-15 | Rarely builds roads | Builds roads but R already placed incorrectly |
+| 16-30 | Attempts to connect but too late | Spots R zones but can't integrate them |
+| 31-50 | High budget waste on disconnected zones | Budget depleted, pop=0 |
+
+### The Root Cause
+
+Models **place R tiles without roads first**, then later try to build roads to connect them. This fails because:
+1. R tiles must be **adjacent to active roads** to generate revenue
+2. By the time roads are built, R tiles are already scattered in wrong locations
+3. Road placement at turn 10+ cannot Salvage R tiles built at turns 0-5
+
+### Timing Analysis
+
+| Metric | Successful Runs | Failed Runs |
+|--------|-----------------|-------------|
+| First road | Turn 2-6 | Turn 25-45 (or never) |
+| First R connected | Turn 4-10 | Never (0 connected) |
+| Delay R→Connect | <7 turns | N/A |
+
+**Key insight**: Successful runs have roads built within first 5 turns. Failed runs delay roads beyond turn 20 or omit them entirely.
+
+### The "Road-First" Template
+
+**Best-performing runs follow this pattern**:
+```
+Turn 0-2:  Build 3-4 roads from center outward
+Turn 3-8:  Build R tiles adjacent to roads (north/south)
+Turn 9-15: Build C tiles near R zones, maintain road spine
+Turn 16-25: Build I on edges, add more R
+Turn 26-50: Scale based on budget, protect connected zones
+```
+
+### Action Placement Pattern
+
+**Successful placement**: R tiles built **adjacent to roads** the same turn or next turn:
+- 8B seed46 success: O at (3,0), R at (3,1) same sequence
+- 3B seed46 success: O at (3,1-5), R at (2,1-5) forming column
+
+**Failed placement**: R tiles built in isolation:
+- 8B seed46 failure: R at (1,1), (2,2), (3,3) diagonal - no roads
+- 3B seed42: R at scattered positions, roads built too late
+
+### Phase Integration Gap
+
+| Model | Avg Phase Gap | Interpretation |
+|-------|---------------|----------------|
+| 8B | 3-5 turns | Reasonable - builds R near roads |
+| 3B | 15-25 turns | Poor - builds R then much later tries roads |
+
+**Thegap between R building and road building is the single most important factor** in predicting success. A gap of >10 turns correlates with 100% failure.
+
 

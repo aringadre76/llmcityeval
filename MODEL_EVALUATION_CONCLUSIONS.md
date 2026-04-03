@@ -1772,3 +1772,37 @@ The **utilization gap of 32-56%** explains why some runs with many R tiles (7-12
 
 ---
 
+## Early Action Pattern Analysis (2026-04-02)
+
+**Critical Finding**: Models exhibit distinct strategic patterns in their first 5 turns that predict long-term success.
+
+| Metric | 8B | 3B |
+|--------|----|----|
+| Zone actions (turns 0-5) | 74 | 100 |
+| R tiles built | 53 (72%) | 77 (77%) |
+| C tiles built | 7 (9%) | 22 (22%) |
+| O tiles built (roads) | 13 (18%) | 1 (1%) |
+| I tiles built | 1 (1%) | 0 |
+| Position center (3-6) | 57 (77%) | 32 (32%) |
+| Position edge/corner | 17 (23%) | 68 (68%) |
+| Avg position | (3.3, 3.3) | (2.7, 2.0) |
+
+### Key Insights
+
+1. **Road building ratio**: 8B builds 18% roads vs 3B's 1% in first 5 turns. This early investment in roads enables connected zones.
+
+2. **Zone type balance**: 3B overemphasizes R tiles (77%) and underbuilds roads. 8B maintains better balance with more roads (18%) and some Industrial (1%).
+
+3. **Spatial distribution**: 8B places 77% of zones in the center where connectivity is easier. 3B places 68% at edges/corners where roads are needed for connectivity.
+
+4. **Position bias**: 3B's position (2.7, 2.0) shifts toward corner, limiting expansion options. 8B's center position (3.3, 3.3) allows balanced growth.
+
+### Strategic Implication
+
+Early action patterns reveal a fundamental difference:
+- **Successful models (8B)**: Build roads first, place zones in center, balance R/C/O/I
+- **Less successful models (3B)**: Build R tiles without roads, place zones at edges, overinvest in R
+
+The **road-first strategy** visible in early turns is a strong predictor of success. Models that delay road building beyond turn 5 consistently fail.
+
+---

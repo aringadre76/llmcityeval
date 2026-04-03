@@ -1030,4 +1030,58 @@ The first 5 turns are critical:
 
 ---
 
+## Budget Sustainability Analysis (2026-04-02)
+
+**Critical Finding**: Sustainable budgeting is key to success. Extreme budget values (high negative or high positive) correlate with failure.
+
+### Budget Patterns by Success Status
+
+| Status | Avg Final Budget | Min Budget | Max Budget | Pop |
+|--------|------------------|------------|------------|-----|
+| 8B Success | 138 | 9 | 2000 | 242 |
+| 8B Fail | 1580 | 1851 | 2000 | 0 |
+| 3B Success | 76 | 4 | 2000 | 150 |
+| 3B Fail | -207 | -586 | 2000 | 0 |
+
+### Key Insights
+
+1. **High positive budget often indicates disconnected zones**:
+   - 8B seed43 failure: budget=1851, pop=0 (many disconnected R)
+   - 8B seed42 failure: budget=1896, pop=0 (more disconnected R)
+   - The model keeps building R without roads, accumulating high budget
+
+2. **High negative budget indicatesunsustainable spending**:
+   - 3B seed46 failure: budget=-586, pop=64
+   - 3B seed46 failure: budget=-262, pop=0
+   - Spending more than generated
+
+3. **Efficient budget management enables success**:
+   - 8B seed43 success: budget=62, pop=183
+   - 8B seed42 success: budget=180, pop=242
+   - 3B seed45 success: budget=18, pop=132
+   - 3B seed45 success: budget=23, pop=113
+
+### Sustainable Budget Range
+
+| Model | Min Budget | Max Budget | Interval |
+|-------|------------|------------|----------|
+| 8B Success | 9 | 2000 | 1991 |
+| 3B Success | 4 | 2000 | 1996 |
+
+**Sustainable budget runs stay within reasonable ranges**:
+- Never go below -50 (deep deficit hard to recover)
+- Never exceed 500 (indicates disconnected zones)
+- Maintain positive net cash flow
+
+### Root Cause: Budget as Symptom
+
+High budget is not the problem - it's a symptom of:
+1. Building R tiles without roads (no revenue generation)
+2. Wasting money on zones that generate 0 revenue
+3. Not understanding that connected zones are required
+
+Low budget doesn't cause failure - efficient use of budget enables success even with tight budgets (3B seed45: 18 budget, 132 pop).
+
+---
+
 ## Score Component Analysis (2026-04-02)

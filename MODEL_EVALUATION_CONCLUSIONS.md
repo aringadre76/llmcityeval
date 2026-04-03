@@ -1574,6 +1574,61 @@ The key to success is achieving **at least 1 connected R tile by turn 20**. This
 - Building R tiles adjacent to roads by turn 10
 - Verifying connectivity every 5 turns
 
+
+---
+
+## First Connected R Timing Analysis (2026-04-02)
+
+**Critical Finding**: Early connected R timing strongly correlates with final population.
+
+### First Connected R Timing by Model
+
+| Model | Avg Turn | Best | Worst | Range |
+|-------|----------|------|-------|-------|
+| 8B | 10.3 | 4 | 23 | [4, 23] |
+| 3B | 15.2 | 8 | 30 | [8, 30] |
+
+**8B achieves first connected R ~5 turns earlier than 3B on average.**
+
+### Success Rate by First Connected R Timing
+
+| Turn Bucket | Runs | Success Rate | Avg Pop |
+|-------------|------|--------------|---------|
+| 0-4 | 1 | 100% | 242 |
+| 5-9 | 5 | 80% | 186 |
+| 10-14 | 4 | 75% | 103 |
+| 15-19 | 4 | 100% | 99 |
+| 20-24 | 1 | 100% | 61 |
+| 30-34 | 1 | 100% | 79 |
+
+### Key Insights
+
+1. **Early connection (turns 0-9)**: 80% success rate, high population (avg 186)
+2. **Mid connection (turns 10-19)**: 88% success rate, moderate population (avg ~100)
+3. **Late connection (turn 20+)**: 100% success rate but low population (avg <80)
+
+4. **8B advantage**: Achieves first connected R earlier (turn 10.3 vs 15.2), enabling earlier compounding growth.
+
+5. **It's never too late**: Even connection at turn 30 leads to success (79 pop), though peak potential is missed.
+
+### Root Cause: Revenue Timing
+
+Models that achieve connected R earlier experience:
+- Earlier revenue generation
+- More turn cycles for compounding growth
+- More opportunities to scale
+
+3B's later connection timing (turn 15.2 vs 10.3) means:
+- ~5 fewer turns of revenue compounding
+- Less total population growth potential
+
+### Strategic Recommendation
+
+Target **first connected R by turn 5-10** to maximize:
+- Late-game population compounding
+- Total revenue captured over 50 turns
+- Resilience to late-game disasters
+
 ## Score Component Analysis (2026-04-02)
 
 The model's composite score is based on four components:
